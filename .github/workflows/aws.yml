@@ -21,8 +21,6 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
-      - name: Nav to working folder
-        run : cd E-voucher-server
       - name: Install yarn
         run: npm i yarn
       - name: Install package
