@@ -32,6 +32,7 @@ module.exports = {
         'sonarjs',
     ],
     rules: {
+        '@typescript-eslint/parser': 'off',
         'no-return-await': 'off',
         '@typescript-eslint/no-unused-vars-experimental': 'off',
         'sonarjs/cognitive-complexity': 'error',
