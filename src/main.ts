@@ -32,6 +32,12 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     new ExpressAdapter(),
     { cors: true },
   );
+  const configService = app.select(SharedModule).get(ApiConfigService);
+
+  if (configService.documentationEnabled) {
+    setupSwagger(app);
+  }
+
   app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
   app.use(
@@ -63,8 +69,6 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     }),
   );
 
-  const configService = app.select(SharedModule).get(ApiConfigService);
-
   // only start nats if it is enabled
   if (configService.natsEnabled) {
     const natsConfig = configService.natsConfig;
@@ -77,10 +81,6 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     });
 
     await app.startAllMicroservices();
-  }
-
-  if (configService.documentationEnabled) {
-    setupSwagger(app);
   }
 
   const port = configService.appConfig.port;
