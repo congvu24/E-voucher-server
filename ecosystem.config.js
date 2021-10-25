@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/parser */
 module.exports = {
     apps: [
         {

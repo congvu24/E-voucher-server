@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
 
+import { CitizenSubscriber } from '../../entity-subscribers/citizen-subscriber';
 import { UserSubscriber } from '../../entity-subscribers/user-subscriber';
 import { SnakeNamingStrategy } from '../../snake-naming.strategy';
 
@@ -97,7 +98,7 @@ export class ApiConfigService {
       username: this.getString('DB_USERNAME'),
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
-      subscribers: [UserSubscriber],
+      subscribers: [UserSubscriber, CitizenSubscriber],
       migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       namingStrategy: new SnakeNamingStrategy(),

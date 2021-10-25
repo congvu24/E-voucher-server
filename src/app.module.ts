@@ -9,11 +9,13 @@ import path from 'path';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
+import { CitizenModule } from './modules/citizen/citizen.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
 import { PostModule } from './modules/post/post.module';
 import { UserModule } from './modules/user/user.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
+import { GovermentModule } from './modules/goverment/goverment.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { SharedModule } from './shared/shared.module';
       inject: [ApiConfigService],
     }),
     HealthCheckerModule,
+    CitizenModule,
+    GovermentModule
   ],
 })
 export class AppModule implements NestModule {

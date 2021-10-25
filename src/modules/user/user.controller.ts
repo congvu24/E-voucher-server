@@ -37,7 +37,7 @@ export class UserController {
       },
     );
 
-    return `${translation} ${user.firstName}`;
+    return `${translation} ${user.name}`;
   }
 
   @Get()

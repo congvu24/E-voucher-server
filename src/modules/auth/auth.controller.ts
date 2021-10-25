@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import {
   Body,
   Controller,
@@ -12,7 +13,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
+import { Auth } from '../../decorators/http.decorators';
 import { ApiFile } from '../../decorators/swagger.schema';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
@@ -23,7 +26,7 @@ import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPayloadDto } from './dto/LoginPayloadDto';
 import { UserLoginDto } from './dto/UserLoginDto';
-import { UserRegisterDto } from './dto/UserRegisterDto';
+import { UserCreateDto, UserRegisterDto } from './dto/UserRegisterDto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -43,7 +46,6 @@ export class AuthController {
     @Body() userLoginDto: UserLoginDto,
   ): Promise<LoginPayloadDto> {
     const userEntity = await this.authService.validateUser(userLoginDto);
-
     const token = await this.authService.createToken(userEntity);
 
     return new LoginPayloadDto(userEntity.toDto(), token);
@@ -67,14 +69,35 @@ export class AuthController {
     });
   }
 
-  @Version('1')
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard())
+  //   @Auth([RoleType.ADMIN])
   @UseInterceptors(AuthUserInterceptor)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
   getCurrentUser(@AuthUser() user: UserEntity): UserDto {
     return user.toDto();
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.OK)
+  @Auth([RoleType.ADMIN])
+  @ApiBearerAuth()
+  @ApiFile({ name: 'avatar' })
+  @ApiOkResponse({ type: UserDto, description: 'create successfull' })
+  async createUser(
+    @Body() userRegisterDto: UserCreateDto,
+    @UploadedFile() file: IFile,
+  ): Promise<UserDto> {
+    //create account
+    const createdUser = await this.userService.createUser(
+      userRegisterDto,
+      file,
+    );
+
+    return createdUser.toDto({
+      isActive: true,
+    });
   }
 }

@@ -1,25 +1,47 @@
 /* eslint-disable max-classes-per-file */
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsDate,
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   MinLength,
 } from 'class-validator';
 import { Column } from 'typeorm';
 
-import { RoleType } from '../../../common/constants/role-type';
 import { Trim } from '../../../decorators/transforms.decorator';
 
-export class UserRegisterDto {
+export class CitizenRegisterDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Trim()
   readonly name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  readonly identify: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  readonly dob: Date;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  readonly job: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  readonly address: string;
 
   @ApiProperty()
   @IsString()
@@ -38,11 +60,4 @@ export class UserRegisterDto {
   @IsString()
   @IsOptional()
   phone: string;
-}
-
-export class UserCreateDto extends UserRegisterDto {
-  @ApiProperty()
-  @Column()
-  @IsEnum(RoleType)
-  role: string;
 }
