@@ -1,19 +1,25 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpException,
   HttpStatus,
   Post,
+  Query,
   UploadedFile,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+import { RoleType } from '../../common/constants/role-type';
+import { PageDto } from '../../common/dto/page.dto';
+import { Auth } from '../../decorators/http.decorators';
 import { ApiFile } from '../../decorators/swagger.schema';
 import { IFile } from '../../interfaces';
+import { CitizenPageOptionsDto } from '../../modules/user/dto/citizen-page-options.dto';
 import { CitizenService } from './citizen.service';
-import { CitizenDto } from './dto/citizen-dto';
-import { CitizenLoginDto } from './dto/citizen-login-dto';
+import type { CitizenDto } from './dto/citizen-dto';
 import { CitizenRegisterDto } from './dto/citizen-register-dto';
 
 @Controller('citizen')
@@ -48,14 +54,17 @@ export class CitizenController {
     return createdCitizen.toDto();
   }
 
-  @Post('login')
+  @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: CitizenDto, description: 'Login success' })
-  async citizenLogin(
-    @Body() citizenLoginDto: CitizenLoginDto,
-  ): Promise<CitizenDto> {
-    const citizen = await this.citizenService.validateLogin(citizenLoginDto);
-
-    return citizen.toDto();
+  @Auth([RoleType.ADMIN, RoleType.GOVERMENT, RoleType.SUPPLIER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'List of citizen',
+  })
+  async getListCitizen(
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: CitizenPageOptionsDto,
+  ): Promise<PageDto<CitizenDto>> {
+    return this.citizenService.getCitizens(pageOptionsDto);
   }
 }

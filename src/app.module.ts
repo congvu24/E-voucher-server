@@ -10,12 +10,16 @@ import path from 'path';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { CitizenModule } from './modules/citizen/citizen.module';
+import { DealerModule } from './modules/dealer/dealer.module';
+import { GovermentModule } from './modules/goverment/goverment.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
+import { PackageModule } from './modules/package/package.module';
 import { PostModule } from './modules/post/post.module';
+import { SupplierModule } from './modules/supplier/supplier.module';
 import { UserModule } from './modules/user/user.module';
+import { VoucherModule } from './modules/voucher/voucher.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
-import { GovermentModule } from './modules/goverment/goverment.module';
 
 @Module({
   imports: [
@@ -46,7 +50,11 @@ import { GovermentModule } from './modules/goverment/goverment.module';
     }),
     HealthCheckerModule,
     CitizenModule,
-    GovermentModule
+    GovermentModule,
+    VoucherModule,
+    SupplierModule,
+    DealerModule,
+    PackageModule,
   ],
 })
 export class AppModule implements NestModule {

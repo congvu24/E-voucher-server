@@ -39,6 +39,9 @@ export class CitizenDto extends AbstractDto {
   @ApiPropertyOptional()
   isValid?: boolean;
 
+  @ApiPropertyOptional()
+  role: string;
+
   constructor(user: CitizenEntity, options?: CitizenDtoOptions) {
     super(user);
     this.name = user.name;
@@ -51,5 +54,6 @@ export class CitizenDto extends AbstractDto {
     this.identify = user.identify;
     this.address = user.address;
     this.dob = user.dob;
+    this.role = user.role;
   }
 }

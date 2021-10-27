@@ -4,10 +4,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import type { CitizenPageOptionsDto } from 'modules/user/dto/citizen-page-options.dto';
+import type { FindConditions } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
+import type { Optional } from 'types';
 
 import type { PageDto } from '../../common/dto/page.dto';
-import type { PageOptionsDto } from '../../common/dto/page-options.dto';
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { IFile } from '../../interfaces';
@@ -27,6 +29,15 @@ export class CitizenService {
     public readonly validatorService: ValidatorService,
     public readonly awsS3Service: AwsS3Service,
   ) {}
+
+  /**
+   * Find single user
+   */
+  findOne(
+    findData: FindConditions<CitizenEntity>,
+  ): Promise<Optional<CitizenEntity>> {
+    return this.citizenRepository.findOne(findData);
+  }
 
   @Transactional()
   async createCitizen(
@@ -71,11 +82,23 @@ export class CitizenService {
   }
 
   async getCitizens(
-    pageOptionsDto: PageOptionsDto,
+    pageOptionsDto: CitizenPageOptionsDto,
   ): Promise<PageDto<CitizenDto>> {
     const queryBuilder = this.citizenRepository
       .createQueryBuilder('citizen')
-      .where('is_valid = :IsValid', { IsValid: false });
+      .orderBy('citizen.created_at', pageOptionsDto.order);
+
+    if (pageOptionsDto.is_valid) {
+      queryBuilder.andWhere('is_valid = :IsValid', {
+        IsValid: pageOptionsDto.is_valid,
+      });
+    }
+
+    if (pageOptionsDto.is_active) {
+      queryBuilder.andWhere('is_active = :is_active', {
+        is_active: pageOptionsDto.is_active,
+      });
+    }
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 

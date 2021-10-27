@@ -9,6 +9,6 @@ import { CitizenService } from './citizen.service';
   imports: [TypeOrmModule.forFeature([CitizenRepository])],
   controllers: [CitizenController],
   providers: [CitizenService],
-  exports: [CitizenService]
+  exports: [CitizenService],
 })
 export class CitizenModule {}

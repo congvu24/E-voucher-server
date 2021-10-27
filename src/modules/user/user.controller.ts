@@ -41,7 +41,6 @@ export class UserController {
   }
 
   @Get()
-  @Auth([RoleType.USER])
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { CitizenDto } from 'modules/citizen/dto/citizen-dto';
 
 import { TokenType } from '../../common/constants/token-type';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
@@ -19,7 +20,9 @@ export class AuthService {
     public readonly userService: UserService,
   ) {}
 
-  async createToken(user: UserEntity | UserDto): Promise<TokenPayloadDto> {
+  async createToken(
+    user: UserEntity | UserDto | CitizenDto,
+  ): Promise<TokenPayloadDto> {
     return new TokenPayloadDto({
       expiresIn: this.configService.authConfig.jwtExpirationTime,
       accessToken: await this.jwtService.signAsync({

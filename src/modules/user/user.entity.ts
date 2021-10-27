@@ -1,9 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
 import { UseDto } from '../../decorators/use-dto.decorator';
-import { VirtualColumn } from '../../decorators/virtual-column.decorator';
+import { PackageEntity } from '../../modules/package/package.entity';
+import { VoucherEntity } from '../../modules/voucher/voucher.entity';
 import type { UserDtoOptions } from './dto/user-dto';
 import { UserDto } from './dto/user-dto';
 
@@ -27,4 +28,13 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> {
 
   @Column({ nullable: true })
   avatar?: string;
+
+  @OneToMany(() => PackageEntity, (servicePackage) => servicePackage.dealer)
+  packages: PackageEntity[];
+
+  @OneToMany(() => VoucherEntity, (voucher) => voucher.supplier)
+  vouchersCreated: VoucherEntity[];
+
+  @OneToMany(() => VoucherEntity, (voucher) => voucher.dealer)
+  vouchersRedeemed: VoucherEntity[];
 }

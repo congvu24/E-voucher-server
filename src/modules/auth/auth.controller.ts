@@ -9,7 +9,6 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Version,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
@@ -20,6 +19,8 @@ import { ApiFile } from '../../decorators/swagger.schema';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
 import { IFile } from '../../interfaces';
+import { CitizenService } from '../citizen/citizen.service';
+import { CitizenLoginDto } from '../citizen/dto/citizen-login-dto';
 import { UserDto } from '../user/dto/user-dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -34,7 +35,23 @@ export class AuthController {
   constructor(
     public readonly userService: UserService,
     public readonly authService: AuthService,
+    public readonly citizenService: CitizenService,
   ) {}
+
+  @Post('/login/citizen')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: LoginPayloadDto,
+    description: 'User info with access token',
+  })
+  async citizenLogin(
+    @Body() userLoginDto: CitizenLoginDto,
+  ): Promise<LoginPayloadDto> {
+    const userEntity = await this.citizenService.validateLogin(userLoginDto);
+    const token = await this.authService.createToken(userEntity);
+
+    return new LoginPayloadDto(userEntity.toDto(), token);
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)

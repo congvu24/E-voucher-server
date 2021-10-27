@@ -1,5 +1,6 @@
 import requestContext from 'request-context';
 
+import type { CitizenEntity } from '../modules/citizen/citizen.entity';
 import type { UserEntity } from '../modules/user/user.entity';
 
 export class ContextProvider {
@@ -22,7 +23,7 @@ export class ContextProvider {
     return `${ContextProvider.nameSpace}.${key}`;
   }
 
-  static setAuthUser(user: UserEntity): void {
+  static setAuthUser(user: UserEntity | CitizenEntity): void {
     ContextProvider.set(ContextProvider.authUserKey, user);
   }
 

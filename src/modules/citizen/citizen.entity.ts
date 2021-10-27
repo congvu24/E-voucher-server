@@ -1,8 +1,11 @@
 import { bool } from 'aws-sdk/clients/signer';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
+import { RoleType } from '../../common/constants/role-type';
 import { UseDto } from '../../decorators/use-dto.decorator';
+import { VoucherEntity } from '../../modules/voucher/voucher.entity';
+import { VoucherRequestEntity } from '../voucher/voucher-request.entity';
 import type { CitizenDtoOptions } from './dto/citizen-dto';
 import { CitizenDto } from './dto/citizen-dto';
 
@@ -44,4 +47,13 @@ export class CitizenEntity extends AbstractEntity<
 
   @Column({ nullable: false, default: false })
   IsValid: bool;
+
+  @Column({ nullable: false, default: RoleType.USER })
+  role: RoleType.USER;
+
+  @OneToMany(() => VoucherRequestEntity, (request) => request.citizen)
+  requests: VoucherRequestEntity[];
+
+  @OneToMany(() => VoucherEntity, (voucher) => voucher.citizen)
+  vouchers: VoucherEntity[];
 }
