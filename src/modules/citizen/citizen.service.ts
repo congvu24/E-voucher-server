@@ -113,6 +113,7 @@ export class CitizenService {
     }
 
     citizen.IsValid = isValid;
+    citizen.secret = UtilsProvider.generateRandomString(6);
 
     return this.citizenRepository.save(citizen);
   }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { VoucherStatusType } from '../../common/constants/voucher-status-type';
@@ -8,7 +8,6 @@ import { UserEntity } from '../../modules/user/user.entity';
 import { CitizenEntity } from '../citizen/citizen.entity';
 import type { VoucherDtoOptions } from './Dto/voucher-dto';
 import { VoucherDto } from './Dto/voucher-dto';
-import { VoucherRequestEntity } from './voucher-request.entity';
 
 @Entity({ name: 'voucher' })
 @UseDto(VoucherDto)
@@ -25,6 +24,9 @@ export class VoucherEntity extends AbstractEntity<
 
   @Column({ nullable: true })
   value: number;
+
+  @Column({ nullable: true })
+  token: string;
 
   @ManyToOne(() => CitizenEntity, (citizen) => citizen.vouchers)
   citizen: CitizenEntity;

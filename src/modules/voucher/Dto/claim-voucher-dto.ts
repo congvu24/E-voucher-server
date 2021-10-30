@@ -1,7 +1,6 @@
 /* eslint-disable max-classes-per-file */
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString, IsUUID } from 'class-validator';
-import { Column } from 'typeorm';
 
 import { Trim } from '../../../decorators/transforms.decorator';
 
@@ -19,4 +18,28 @@ export class ClaimVoucherDto {
   @Trim()
   @IsUUID()
   readonly packageId: string;
+
+  @ApiProperty()
+  @IsString()
+  @Trim()
+  @IsUUID()
+  readonly supplierId: string;
+
+  @ApiProperty()
+  @IsString()
+  @Trim()
+  @IsUUID()
+  readonly key: string;
+
+  @ApiProperty()
+  @IsString()
+  @Trim()
+  @IsUUID()
+  readonly citizenId: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @Trim()
+  @IsOptional()
+  readonly token: string;
 }

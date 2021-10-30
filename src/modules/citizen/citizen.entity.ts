@@ -51,6 +51,9 @@ export class CitizenEntity extends AbstractEntity<
   @Column({ nullable: false, default: RoleType.USER })
   role: RoleType.USER;
 
+  @Column({ nullable: true })
+  secret: string;
+
   @OneToMany(() => VoucherRequestEntity, (request) => request.citizen)
   requests: VoucherRequestEntity[];
 

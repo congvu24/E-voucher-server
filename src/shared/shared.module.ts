@@ -5,6 +5,7 @@ import { Global, Module } from '@nestjs/common';
 import { ApiConfigService } from './services/api-config.service';
 import { AwsS3Service } from './services/aws-s3.service';
 import { GeneratorService } from './services/generator.service';
+import { HyperledgerService } from './services/hyperledger.service';
 import { TranslationService } from './services/translation.service';
 import { ValidatorService } from './services/validator.service';
 
@@ -14,6 +15,7 @@ const providers = [
   AwsS3Service,
   GeneratorService,
   TranslationService,
+  HyperledgerService,
   // {
   //   provide: 'NATS_SERVICE',
   //   useFactory: (configService: ApiConfigService) => {

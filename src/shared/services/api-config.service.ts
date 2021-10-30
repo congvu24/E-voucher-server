@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
+import path from 'path';
 
 import { CitizenSubscriber } from '../../entity-subscribers/citizen-subscriber';
 import { UserSubscriber } from '../../entity-subscribers/user-subscriber';
@@ -138,6 +139,20 @@ export class ApiConfigService {
   get appConfig() {
     return {
       port: this.getString('PORT'),
+    };
+  }
+
+  get hyperledgerConfig() {
+    return {
+      connectionPath: path.resolve(
+        __dirname,
+        '../../database/hyperledger/profiles/mychannel_connection_for_nodesdk.json',
+      ),
+      walletPath: path.resolve(
+        __dirname,
+        '../../database/hyperledger/profiles/vscode/wallets',
+      ),
+      orgName: this.get('ORG_NAME'),
     };
   }
 

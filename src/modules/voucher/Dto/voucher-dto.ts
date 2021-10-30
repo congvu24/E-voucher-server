@@ -17,6 +17,9 @@ export class VoucherDto extends AbstractDto {
   value: number;
 
   @ApiPropertyOptional()
+  token: string;
+
+  @ApiPropertyOptional()
   citizen?: CitizenDto;
 
   @ApiPropertyOptional()
@@ -25,12 +28,12 @@ export class VoucherDto extends AbstractDto {
   @ApiPropertyOptional()
   dealer?: UserDto;
 
-
   constructor(voucher: VoucherEntity) {
     super(voucher);
     this.id = voucher.id;
     this.value = voucher.value;
     this.status = voucher.status;
+    this.token = voucher.token;
     this.citizen = voucher.citizen?.toDto();
     this.supplier = voucher.supplier?.toDto();
     this.dealer = voucher.dealer?.toDto();

@@ -13,6 +13,7 @@ import { CitizenModule } from './modules/citizen/citizen.module';
 import { DealerModule } from './modules/dealer/dealer.module';
 import { GovermentModule } from './modules/goverment/goverment.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
+import { LedgerModule } from './modules/ledger/ledger.module';
 import { PackageModule } from './modules/package/package.module';
 import { PostModule } from './modules/post/post.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
@@ -55,6 +56,7 @@ import { SharedModule } from './shared/shared.module';
     SupplierModule,
     DealerModule,
     PackageModule,
+    LedgerModule,
   ],
 })
 export class AppModule implements NestModule {

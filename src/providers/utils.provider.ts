@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import bcrypt from 'bcrypt';
+import CryptoJS from 'crypto-js';
 
 import type { Optional } from '../types';
 
@@ -38,5 +40,27 @@ export class UtilsProvider {
     }
 
     return bcrypt.compare(password, hash);
+  }
+
+  /**
+   * encrypt data
+   * @param data
+   * @param {string} secret
+   * @returns {string}
+   */
+  static encryptData(data: unknown, secret: string): string {
+    return CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString();
+  }
+
+  /**
+   * decrypt data
+   * @param data
+   * @param {string} secret
+   * @returns {string}
+   */
+  static decryptData(value: string, secret: string): Object {
+    return JSON.parse(
+      CryptoJS.AES.decrypt(value, secret).toString(CryptoJS.enc.Utf8),
+    );
   }
 }

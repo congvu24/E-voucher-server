@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { LedgerModule } from '../../modules/ledger/ledger.module';
 import { PackageModule } from '../../modules/package/package.module';
 import { VoucherController } from './voucher.controller';
 import { VoucherRepository } from './voucher.repository';
@@ -12,6 +13,7 @@ import { VoucherRequestService } from './voucher-request.service';
 @Module({
   imports: [
     forwardRef(() => PackageModule),
+    forwardRef(() => LedgerModule),
     TypeOrmModule.forFeature([VoucherRequestRepository]),
     TypeOrmModule.forFeature([VoucherRepository]),
   ],
