@@ -1,11 +1,13 @@
 /* eslint-disable unicorn/no-array-for-each */
 import {
-  HttpCode,
+  CACHE_MANAGER,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import type { PageDto } from 'common/dto/page.dto';
 import type { CitizenEntity } from 'modules/citizen/citizen.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
@@ -13,6 +15,8 @@ import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { VoucherStatusType } from '../../common/constants/voucher-status-type';
 import { LedgerService } from '../../modules/ledger/ledger.service';
 import { PackageService } from '../../modules/package/package.service';
+import { QrcodeService } from '../../modules/qrcode/qrcode.service';
+import { RedisCacheService } from '../../modules/redis-cache/redis-cache.service';
 import { ContextProvider } from '../../providers/context.provider';
 import { UtilsProvider } from '../../providers/utils.provider';
 import type { ClaimVoucherDto } from './Dto/claim-voucher-dto';
@@ -20,6 +24,7 @@ import type { VoucherBulkCreateDto } from './Dto/voucher-create-dto';
 import { VoucherCreateDto } from './Dto/voucher-create-dto';
 import type { VoucherDto } from './Dto/voucher-dto';
 import type { VoucherPageOptions } from './Dto/voucher-page-options.dto';
+import type { VoucherQR } from './Dto/voucher-qr-dto';
 import { VoucherRepository } from './voucher.repository';
 import { VoucherRequestService } from './voucher-request.service';
 
@@ -30,6 +35,8 @@ export class VoucherService {
     private readonly voucherRequestService: VoucherRequestService,
     private readonly packageService: PackageService,
     private readonly ledgerService: LedgerService,
+    private readonly qrCodeService: QrcodeService,
+    private readonly cache: RedisCacheService, // private readonly cacheManager: Cache,
   ) {}
 
   @Transactional()
@@ -198,5 +205,43 @@ export class VoucherService {
     await this.ledgerService.commitVoucher(data.key, voucher);
 
     return voucher.toDto();
+  }
+
+  async getVoucherQR(id: string): Promise<VoucherQR> {
+    const voucher = await this.voucherRepository.findOne(id, {
+      relations: ['citizen'],
+    });
+
+    if (!voucher) {
+      throw new NotFoundException();
+    }
+
+    const data: any = UtilsProvider.decryptData(
+      voucher.token,
+      voucher?.citizen.secret || '',
+    );
+
+    let url = '';
+    const find = await this.cache.get(id);
+
+    if (find !== undefined) {
+      url = await this.cache.get(id);
+    } else {
+      url = await this.qrCodeService.createQRCode({
+        key: data.key,
+        supplier_id: data.supplier_id,
+        citizen_id: data.citizen_id,
+      });
+
+      await this.cache.set(id, url);
+    }
+
+    const voucherQR: VoucherQR = {
+      voucherId: voucher.id,
+      url,
+      timeout: 30,
+    };
+
+    return voucherQR;
   }
 }

@@ -5,6 +5,7 @@ import { Gateway, Wallets } from 'fabric-network';
 import fs from 'fs';
 import path from 'path';
 
+import { LedgerNotReadyExption } from '../../exceptions/ledger-not-ready.exception';
 import { ApiConfigService } from './api-config.service';
 
 @Injectable()
@@ -60,6 +61,8 @@ export class HyperledgerService {
       Logger.log('Init hyperledger service success');
     } catch (error) {
       Logger.error('Init hyperledger failed', error);
+
+      throw new LedgerNotReadyExption();
     }
   }
 }

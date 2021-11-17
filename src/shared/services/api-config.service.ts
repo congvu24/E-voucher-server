@@ -156,6 +156,14 @@ export class ApiConfigService {
     };
   }
 
+  get cacheTLL() {
+    return this.get('CACHE_TLL');
+  }
+
+  get cachePort() {
+    return this.get('CACHE_PORT');
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

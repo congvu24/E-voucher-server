@@ -22,11 +22,8 @@ import {
 } from './Dto/voucher-create-dto';
 import { VoucherDto } from './Dto/voucher-dto';
 import { VoucherPageOptions } from './Dto/voucher-page-options.dto';
-import { VoucherRequestCreateDto } from './Dto/voucher-request-create-dto';
-import { VoucherRequestDto } from './Dto/voucher-request-dto';
-import { VoucherEntity } from './voucher.entity';
+import { VoucherQR } from './Dto/voucher-qr-dto';
 import { VoucherService } from './voucher.service';
-import { VoucherRequestService } from './voucher-request.service';
 
 @Controller('voucher')
 export class VoucherController {
@@ -84,7 +81,7 @@ export class VoucherController {
     return this.voucherService.getAllVoucher(pageOptionsDto);
   }
 
-  @Put('')
+  @Put('/cancel/:id')
   @ApiTags('voucher')
   @Auth([RoleType.USER])
   @ApiOkResponse({
@@ -111,6 +108,17 @@ export class VoucherController {
     id: string,
   ): Promise<VoucherDto> {
     return this.voucherService.deleteVoucher(id);
+  }
+
+  @Put('/qr/:id')
+  @ApiTags('voucher')
+  @Auth([RoleType.USER])
+  @ApiOkResponse({
+    type: VoucherQR,
+    description: 'Get voucher qr code',
+  })
+  getVoucherQR(@UUIDParam('id') voucherId: string): Promise<VoucherQR> {
+    return this.voucherService.getVoucherQR(voucherId);
   }
 
   @Put('/claim')

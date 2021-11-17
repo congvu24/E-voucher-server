@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import CryptoJS from 'crypto-js';
 
@@ -59,8 +60,14 @@ export class UtilsProvider {
    * @returns {string}
    */
   static decryptData(value: string, secret: string): Object {
-    return JSON.parse(
-      CryptoJS.AES.decrypt(value, secret).toString(CryptoJS.enc.Utf8),
-    );
+    const raw = CryptoJS.AES.decrypt(value, secret).toString(CryptoJS.enc.Utf8);
+
+    if (raw) {
+      return JSON.parse(
+        CryptoJS.AES.decrypt(value, secret).toString(CryptoJS.enc.Utf8),
+      );
+    }
+
+    throw new UnauthorizedException();
   }
 }

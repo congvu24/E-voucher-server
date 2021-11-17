@@ -81,7 +81,6 @@ export class LedgerService {
       Logger.log('Result', result.toString());
 
       const jsonData = JSON.parse(result.toString());
-      //   if(jsonData.length ==)
 
       return plainToClass(VoucherEntity, jsonData[0].Record);
     } catch (error) {

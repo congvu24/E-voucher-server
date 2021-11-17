@@ -24,7 +24,7 @@ import { VoucherRequestService } from './voucher-request.service';
 export class VoucherRequestController {
   constructor(private readonly voucherRequestService: VoucherRequestService) {}
 
-  @Post('/request')
+  @Post()
   @Auth([RoleType.USER])
   @ApiOkResponse({
     type: VoucherRequestDto,

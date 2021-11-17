@@ -1,10 +1,12 @@
 import './boilerplate.polyfill';
 
 import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-redis-store';
 import { I18nJsonParser, I18nModule } from 'nestjs-i18n';
+import { RedisModule } from 'nestjs-redis';
 import path from 'path';
 
 import { contextMiddleware } from './middlewares';
@@ -16,6 +18,7 @@ import { HealthCheckerModule } from './modules/health-checker/health-checker.mod
 import { LedgerModule } from './modules/ledger/ledger.module';
 import { PackageModule } from './modules/package/package.module';
 import { PostModule } from './modules/post/post.module';
+import { QrcodeModule } from './modules/qrcode/qrcode.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { UserModule } from './modules/user/user.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
@@ -49,6 +52,15 @@ import { SharedModule } from './shared/shared.module';
       parser: I18nJsonParser,
       inject: [ApiConfigService],
     }),
+    CacheModule.register({
+      useFactory: (configService: ApiConfigService) => ({
+        store: redisStore,
+        host: 'localhost',
+        port: configService.cachePort,
+        ttl: configService.cacheTLL,
+      }),
+      imports: [SharedModule],
+    }),
     HealthCheckerModule,
     CitizenModule,
     GovermentModule,
@@ -57,6 +69,7 @@ import { SharedModule } from './shared/shared.module';
     DealerModule,
     PackageModule,
     LedgerModule,
+    QrcodeModule,
   ],
 })
 export class AppModule implements NestModule {
