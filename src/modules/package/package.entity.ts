@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators/use-dto.decorator';
 import { UserEntity } from '../../modules/user/user.entity';
+import { VoucherClaimEntity } from '../../modules/voucher/voucher-claim.entity';
 import type { PackageDtoOptions } from './dto/package-dto';
 import { PackageDto } from './dto/package-dto';
 
@@ -27,6 +28,9 @@ export class PackageEntity extends AbstractEntity<
   @Column({ nullable: false, default: true })
   isShow: boolean;
 
-  @ManyToOne(() => UserEntity, (request) => request.packages)
+  @ManyToOne(() => UserEntity, (dealer) => dealer.packages)
   dealer: UserEntity;
+
+  @OneToMany(() => VoucherClaimEntity, (claim) => claim.servicePackage)
+  claims: UserEntity[];
 }

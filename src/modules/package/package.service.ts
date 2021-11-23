@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PageDto } from 'common/dto/page.dto';
 import type { PageOptionsDto } from 'common/dto/page-options.dto';
+import type { IFile } from 'interfaces/IFile';
 import type { FindConditions } from 'typeorm';
 import type { Optional } from 'types';
 
@@ -28,12 +29,18 @@ export class PackageService {
   async createPackage(
     dealer: UserEntity,
     data: PackageCreateDto,
+    file?: IFile,
   ): Promise<PackageDto> {
     const newPackage = this.packageRepository.create(data);
     newPackage.dealer = dealer;
+
+    if (file) {
+      console.log(file);
+    }
+
     await this.packageRepository.save(newPackage);
 
-    return newPackage;
+    return newPackage.toDto();
   }
 
   async getPackage(
@@ -59,7 +66,7 @@ export class PackageService {
       throw new NotFoundException();
     }
 
-    await this.packageRepository.delete({ id: servicePackage.id });
+    await this.packageRepository.softDelete({ id: servicePackage.id });
   }
 
   async editPackage(

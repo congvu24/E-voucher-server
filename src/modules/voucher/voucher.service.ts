@@ -12,6 +12,8 @@ import type { PageDto } from 'common/dto/page.dto';
 import type { CitizenEntity } from 'modules/citizen/citizen.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
+import { HelpLevelValue } from '../../common/constants/help-level-type';
+import { VOUCHER_VALID_DAY } from '../../common/constants/number';
 import { VoucherStatusType } from '../../common/constants/voucher-status-type';
 import { LedgerService } from '../../modules/ledger/ledger.service';
 import { PackageService } from '../../modules/package/package.service';
@@ -26,6 +28,7 @@ import type { VoucherDto } from './Dto/voucher-dto';
 import type { VoucherPageOptions } from './Dto/voucher-page-options.dto';
 import type { VoucherQR } from './Dto/voucher-qr-dto';
 import { VoucherRepository } from './voucher.repository';
+import { VoucherClaimRepository } from './voucher-claim.repository';
 import { VoucherRequestService } from './voucher-request.service';
 
 @Injectable()
@@ -33,6 +36,7 @@ export class VoucherService {
   constructor(
     private readonly voucherRepository: VoucherRepository,
     private readonly voucherRequestService: VoucherRequestService,
+    private readonly voucherClaimRepository: VoucherClaimRepository,
     private readonly packageService: PackageService,
     private readonly ledgerService: LedgerService,
     private readonly qrCodeService: QrcodeService,
@@ -51,6 +55,12 @@ export class VoucherService {
 
     const voucher = this.voucherRepository.create();
 
+    voucher.type = data.type;
+    voucher.validDate = new Date(
+      Date.now() + 1000 * 3600 * 24 * VOUCHER_VALID_DAY,
+    );
+
+    voucher.value = HelpLevelValue[data.type ?? request.type];
     voucher.supplier = ContextProvider.getAuthUser();
     voucher.citizen = request.citizen;
     voucher.token = UtilsProvider.encryptData(
@@ -71,22 +81,23 @@ export class VoucherService {
   }
 
   async createBulkVoucher(data: VoucherBulkCreateDto): Promise<VoucherDto[]> {
-    const listResult: VoucherDto[] = [];
-    const listErr: string[] = [];
-
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const query = data.requestIds.map(async (id) => {
-      try {
-        const newVoucher = await this.createVoucher({ requestId: id });
-        listResult.push(newVoucher);
-      } catch {
-        listErr.push('Can not create voucher for id: ', id);
-      }
-    });
-
-    await Promise.all(query);
-
-    return listResult;
+    //     const listResult: VoucherDto[] = [];
+    //     const listErr: string[] = [];
+    //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    //     const query = data.requestIds.map(async (id) => {
+    //       try {
+    //         const newVoucher = await this.createVoucher({
+    //     requestId: id,
+    //     type: .SUPPORT
+    // });
+    //         listResult.push(newVoucher);
+    //       } catch {
+    //         listErr.push('Can not create voucher for id: ', id);
+    //       }
+    //     });
+    //     await Promise.all(query);
+    //     return listResult;
+    return [];
   }
 
   async getMyVoucher(
@@ -158,18 +169,6 @@ export class VoucherService {
   }
 
   async claimVoucher(data: ClaimVoucherDto): Promise<VoucherDto> {
-    // const voucher = await this.voucherRepository.findOne(data.voucherId, {
-    //   relations: ['citizen'],
-    // });
-
-    // if (data.token) {
-    //   data = {
-    //     ...data,
-    //     ...UtilsProvider.decryptData(data.token, voucher?.citizen.secret || ''),
-    //   };
-    //   console.log(data);
-    // }
-
     const dealer = ContextProvider.getAuthUser();
 
     const voucher = await this.ledgerService.getVoucher(
@@ -186,13 +185,28 @@ export class VoucherService {
       throw new NotFoundException();
     }
 
+    if (
+      voucher.value < servicePackage.minValue ||
+      voucher.value > servicePackage.maxValue
+    ) {
+      throw new HttpException(
+        'This package is beyond the value of voucher',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    if (voucher.validDate < new Date()) {
+      throw new HttpException(
+        'This voucher is out of date',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     if (voucher.status !== VoucherStatusType.UNUSE) {
       throw new HttpException('This voucher is redeemed', HttpStatus.CONFLICT);
     }
 
     voucher.status = VoucherStatusType.USED;
-    voucher.package = servicePackage;
-    voucher.dealer = dealer;
 
     await this.voucherRepository.update(
       { id: data.voucherId },
@@ -202,9 +216,18 @@ export class VoucherService {
         dealer: servicePackage.dealer,
       },
     );
-    await this.ledgerService.commitVoucher(data.key, voucher);
+    await this.ledgerService.commitVoucher(
+      data.key,
+      servicePackage.dealer.id,
+      servicePackage.id,
+    );
 
-    return voucher.toDto();
+    await this.voucherClaimRepository.save({
+      servicePackage,
+      voucherId: data.voucherId,
+    });
+
+    return voucher;
   }
 
   async getVoucherQR(id: string): Promise<VoucherQR> {

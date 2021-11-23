@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
+import { HelpLevelType } from '../../common/constants/help-level-type';
 import { VoucherRequestType } from '../../common/constants/voucher-request-type';
 import { UseDto } from '../../decorators/use-dto.decorator';
 import { CitizenEntity } from '../citizen/citizen.entity';
@@ -23,6 +24,13 @@ export class VoucherRequestEntity extends AbstractEntity<
     default: VoucherRequestType.PENDING,
   })
   status: VoucherRequestType;
+
+  @Column({
+    type: 'enum',
+    enum: HelpLevelType,
+    default: HelpLevelType.SUPPORT,
+  })
+  type: HelpLevelType;
 
   @Column({ nullable: true })
   note: string;

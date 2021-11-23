@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,8 @@ import { PageDto } from '../../common/dto/page.dto';
 import { PageOptionsDto } from '../../common/dto/page-options.dto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
+import { ApiFile } from '../../decorators/swagger.schema';
+import { IFile } from '../../interfaces/IFile';
 import { UserEntity } from '../../modules/user/user.entity';
 import { PackageCreateDto } from './dto/create-package-dto';
 import { PackageDto } from './dto/package-dto';
@@ -34,11 +37,13 @@ export class PackageController {
     type: PackageDto,
     description: 'create service package success',
   })
+  @ApiFile({ name: 'thumbnail' })
   async createPackage(
     @AuthUser() dealer: UserEntity,
     @Body() data: PackageCreateDto,
+    @UploadedFile() file: IFile,
   ): Promise<PackageDto> {
-    return this.packageService.createPackage(dealer, data);
+    return this.packageService.createPackage(dealer, data, file);
   }
 
   @Get()

@@ -1,5 +1,6 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+import { HelpLevelType } from '../../../common/constants/help-level-type';
 import { VoucherRequestType } from '../../../common/constants/voucher-request-type';
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { CitizenDto } from '../../citizen/dto/citizen-dto';
@@ -16,6 +17,9 @@ export class VoucherRequestDto extends AbstractDto {
   status: VoucherRequestType;
 
   @ApiPropertyOptional()
+  type: string;
+
+  @ApiPropertyOptional()
   citizen?: CitizenDto;
 
   @ApiPropertyOptional()
@@ -26,6 +30,7 @@ export class VoucherRequestDto extends AbstractDto {
     this.id = request.id;
     this.note = request.note;
     this.status = request.status;
+    this.type = request.type;
     this.citizen = request.citizen?.toDto();
     this.voucher = request.voucher?.toDto();
     this.updatedAt = request.updatedAt;

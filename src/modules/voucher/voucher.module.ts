@@ -8,6 +8,7 @@ import { RedisCacheModule } from '../../modules/redis-cache/redis-cache.module';
 import { VoucherController } from './voucher.controller';
 import { VoucherRepository } from './voucher.repository';
 import { VoucherService } from './voucher.service';
+import { VoucherClaimRepository } from './voucher-claim.repository';
 import { VoucherRequestController } from './voucher-request.controller';
 import { VoucherRequestRepository } from './voucher-request.repository';
 import { VoucherRequestService } from './voucher-request.service';
@@ -20,6 +21,7 @@ import { VoucherRequestService } from './voucher-request.service';
     forwardRef(() => RedisCacheModule),
     TypeOrmModule.forFeature([VoucherRequestRepository]),
     TypeOrmModule.forFeature([VoucherRepository]),
+    TypeOrmModule.forFeature([VoucherClaimRepository]),
   ],
   controllers: [VoucherRequestController, VoucherController],
   providers: [VoucherRequestService, VoucherService],

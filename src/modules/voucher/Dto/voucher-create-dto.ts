@@ -1,7 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsEnum, IsString, IsUUID } from 'class-validator';
 
+import { HelpLevelType } from '../../../common/constants/help-level-type';
 import { Trim } from '../../../decorators/transforms.decorator';
 
 export class VoucherCreateDto {
@@ -10,6 +11,11 @@ export class VoucherCreateDto {
   @Trim()
   @IsUUID()
   readonly requestId: string;
+
+  @ApiProperty()
+  @IsEnum(HelpLevelType)
+  @Trim()
+  readonly type: HelpLevelType;
 }
 
 export class VoucherBulkCreateDto {
