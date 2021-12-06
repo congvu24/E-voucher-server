@@ -77,4 +77,10 @@ export class VoucherRequestService {
     request.status = VoucherRequestType.ACCEPTED;
     await this.voucherRequestRepository.save(request);
   }
+
+  async countNewRequest(): Promise<number> {
+    return this.voucherRequestRepository.count({
+      where: { status: VoucherRequestType.PENDING },
+    });
+  }
 }

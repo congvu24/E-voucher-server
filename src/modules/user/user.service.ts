@@ -3,6 +3,7 @@ import type { FindConditions } from 'typeorm';
 import { getManager } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
+import { RoleType } from '../../common/constants/role-type';
 import type { PageDto } from '../../common/dto/page.dto';
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
@@ -92,5 +93,9 @@ export class UserService {
     }
 
     return userEntity.toDto();
+  }
+
+  async countDealer(): Promise<number> {
+    return this.userRepository.count({ where: { role: RoleType.DEALER } });
   }
 }

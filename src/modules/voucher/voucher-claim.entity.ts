@@ -15,6 +15,9 @@ export class VoucherClaimEntity extends AbstractEntity<
   @Column({ unique: true })
   voucherId: string;
 
+  @Column({ default: 0 })
+  value: number;
+
   @ManyToOne(() => PackageEntity, (servicePackage) => servicePackage.claims)
   servicePackage: PackageEntity;
 }

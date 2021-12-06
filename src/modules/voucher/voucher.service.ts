@@ -225,6 +225,7 @@ export class VoucherService {
     await this.voucherClaimRepository.save({
       servicePackage,
       voucherId: data.voucherId,
+      value: voucher.value,
     });
 
     return voucher;
@@ -266,5 +267,60 @@ export class VoucherService {
     };
 
     return voucherQR;
+  }
+
+  async countVoucher(): Promise<number> {
+    return this.voucherRepository.count();
+  }
+
+  async countClaimedVoucher(dealerId: string): Promise<number> {
+    const queryBuilder =
+      this.voucherClaimRepository.createQueryBuilder('claim');
+
+    return queryBuilder
+      .leftJoinAndSelect('claim.servicePackage', 'package')
+      .where('package.dealer_id = :dealerId', { dealerId })
+      .getCount();
+  }
+
+  async countClaimedVoucherInMonth(dealerId: string): Promise<number> {
+    const lastMonthDay = new Date(
+      Date.now() - 30 * 24 * 3600 * 1000,
+    ).toISOString();
+    const queryBuilder =
+      this.voucherClaimRepository.createQueryBuilder('claim');
+
+    return queryBuilder
+      .leftJoinAndSelect('claim.servicePackage', 'package')
+      .where('package.dealer_id = :dealerId', { dealerId })
+      .andWhere('claim.created_at >= :lastMonthDay', { lastMonthDay })
+      .getCount();
+  }
+
+  async sumClaimVoucher(dealerId: string): Promise<number> {
+    const { sum } = await this.voucherClaimRepository
+      .createQueryBuilder('claim')
+      .leftJoinAndSelect('claim.servicePackage', 'package')
+      .where('package.dealer_id = :dealerId', { dealerId })
+      .select('SUM(claim.value)', 'sum')
+      .getRawOne();
+
+    return Number.parseInt(String(sum), 10);
+  }
+
+  async sumClaimVoucherInMonth(dealerId: string): Promise<number> {
+    const lastMonthDay = new Date(
+      Date.now() - 30 * 24 * 3600 * 1000,
+    ).toISOString();
+
+    const { sum } = await this.voucherClaimRepository
+      .createQueryBuilder('claim')
+      .leftJoinAndSelect('claim.servicePackage', 'package')
+      .where('package.dealer_id = :dealerId', { dealerId })
+      .andWhere('claim.created_at >= :lastMonthDay', { lastMonthDay })
+      .select('SUM(claim.value)', 'sum')
+      .getRawOne();
+
+    return Number.parseInt(String(sum), 10);
   }
 }

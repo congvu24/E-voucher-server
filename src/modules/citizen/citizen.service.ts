@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import type { CitizenPageOptionsDto } from 'modules/user/dto/citizen-page-options.dto';
-import type { FindConditions } from 'typeorm';
+import { FindConditions, MoreThan } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import type { Optional } from 'types';
 
@@ -126,5 +126,25 @@ export class CitizenService {
     }
 
     await this.citizenRepository.delete({ id: citizen.id });
+  }
+
+  async countNewCitizen(): Promise<number> {
+    const lastMonthDay = new Date(Date.now() - 30 * 24 * 3600 * 1000);
+
+    return this.citizenRepository.count({
+      where: { createdAt: MoreThan(lastMonthDay.toISOString()) },
+    });
+  }
+
+  async countAllCitizen(): Promise<number> {
+    return this.citizenRepository.count();
+  }
+
+  async countPendingCitizen(): Promise<number> {
+    return this.citizenRepository.count({
+      where: {
+        IsValid: false,
+      },
+    });
   }
 }

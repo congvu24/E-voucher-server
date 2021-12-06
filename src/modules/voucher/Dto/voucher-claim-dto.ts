@@ -12,12 +12,16 @@ export class VoucherClaimDto extends AbstractDto {
   voucherId: string;
 
   @ApiPropertyOptional()
+  value: number;
+
+  @ApiPropertyOptional()
   servicePackage: PackageDto;
 
-  constructor(voucher: VoucherClaimEntity) {
-    super(voucher);
-    this.id = voucher.id;
-    this.voucherId = voucher.id;
-    this.servicePackage = voucher.servicePackage.toDto();
+  constructor(claim: VoucherClaimEntity) {
+    super(claim);
+    this.id = claim.id;
+    this.voucherId = claim.id;
+    this.value = claim.value;
+    this.servicePackage = claim.servicePackage.toDto();
   }
 }

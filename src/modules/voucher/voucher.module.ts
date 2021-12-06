@@ -25,6 +25,6 @@ import { VoucherRequestService } from './voucher-request.service';
   ],
   controllers: [VoucherRequestController, VoucherController],
   providers: [VoucherRequestService, VoucherService],
-  exports: [VoucherRequestService, TypeOrmModule],
+  exports: [VoucherRequestService, TypeOrmModule, VoucherService],
 })
 export class VoucherModule {}

@@ -6,10 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import { I18nJsonParser, I18nModule } from 'nestjs-i18n';
-import { RedisModule } from 'nestjs-redis';
 import path from 'path';
 
 import { contextMiddleware } from './middlewares';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CitizenModule } from './modules/citizen/citizen.module';
 import { DealerModule } from './modules/dealer/dealer.module';
@@ -70,6 +70,7 @@ import { SharedModule } from './shared/shared.module';
     PackageModule,
     LedgerModule,
     QrcodeModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule implements NestModule {
