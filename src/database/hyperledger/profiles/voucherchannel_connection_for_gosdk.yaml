@@ -1,0 +1,327 @@
+---
+# ROOTPATH should be set to the absolute path of crypto material starting directory
+# for example: export ROOTPATH=/home/ubuntu/mywork/vars/keyfiles
+"name": "vouchernet"
+"x-type": "hlfv-2.3.0"
+"version": "1.0.0"
+"client":
+  "organization": "dealer1.voucher.com"
+  "cryptoconfig":
+    "path": "${ROOTPATH}"
+  "connection":
+    "timeout":
+      "peer":
+        "endorser": "300"
+        "eventHub": "300"
+        "eventReg": "300"
+      "orderer": "300"
+  "credentialStore":
+    "path": "/tmp/state-store"
+    "cryptoStore":
+      "path": "/tmp/msp"
+  "BCCSP":
+    "security":
+      "enabled": "true"
+      "default":
+        "provider": "SW"
+      "hashAlgorithm": "SHA2"
+      "softVerify": "true"
+      "level": "256"
+
+"channels":
+  "voucherchannel":
+    "orderers":
+    - "orderer1.example.com"
+    - "orderer2.example.com"
+    "peers":
+      "manager.supplier.voucher.com":
+        "endorsingPeer": true
+        "chaincodeQuery": true
+        "eventSource": true
+      "user.supplier.voucher.com":
+        "endorsingPeer": true
+        "chaincodeQuery": true
+        "eventSource": true
+      "peer1.dealer1.voucher.com":
+        "endorsingPeer": true
+        "chaincodeQuery": true
+        "eventSource": true
+      "peer2.dealer1.voucher.com":
+        "endorsingPeer": true
+        "chaincodeQuery": true
+        "eventSource": true
+
+"organizations":
+  "dealer1.voucher.com":
+    "mspid": "dealer1-voucher-com"
+    "cryptoPath": "peerOrganizations/dealer1.voucher.com/users/{username}@dealer1.voucher.com/msp"
+    "peers":
+    - "peer1.dealer1.voucher.com"
+    - "peer2.dealer1.voucher.com"
+    "certificateAuthorities":
+    - "ca1.dealer1.voucher.com"
+  "example.com":
+    "mspid": "example-com"
+    "cryptoPath": "ordererOrganizations/example.com/users/{username}@example.com/msp"
+    "orderers":
+    - "orderer1.example.com"
+    - "orderer2.example.com"
+    "certificateAuthorities":
+  "supplier.voucher.com":
+    "mspid": "supplier-voucher-com"
+    "cryptoPath": "peerOrganizations/supplier.voucher.com/users/{username}@supplier.voucher.com/msp"
+    "peers":
+    - "manager.supplier.voucher.com"
+    - "user.supplier.voucher.com"
+    "certificateAuthorities":
+    - "ca1.supplier.voucher.com"
+
+"orderers":
+  "orderer1.example.com":
+    "url": "grpcs://34.87.41.29:7010"
+    "grpcOptions":
+      "ssl-target-name-override": "orderer1.example.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIICojCCAkigAwIBAgIUIyn7TRA0vv2uAMcDl8oE4vGIgH8wCgYIKoZIzj0EAwIw
+        ajELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMRQwEgYDVQQKDAtleGFtcGxlLmNvbTEaMBgGA1UEAwwRdGxzY2Eu
+        ZXhhbXBsZS5jb20wHhcNMjExMjEzMDkwNDM4WhcNMzExMjExMDkwNDM4WjBqMQsw
+        CQYDVQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1Jh
+        bGVpZ2gxFDASBgNVBAoMC2V4YW1wbGUuY29tMRowGAYDVQQDDBF0bHNjYS5leGFt
+        cGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOpnx9TxnVJCBbafd47n
+        mwlwK5lPFOMJuDs/ACq8DuNqhJJAAeH6ElUt9G/9plb9rYiXtSBZhka+5SJn8Y7s
+        QwmjgcswgcgwHQYDVR0OBBYEFKuw1/YIfOWvOT366THh+9D4v9PhMB8GA1UdIwQY
+        MBaAFKuw1/YIfOWvOT366THh+9D4v9PhMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0P
+        AQH/BAQDAgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBGBgNVHREE
+        PzA9hwQiVykdghF0bHNjYS5leGFtcGxlLmNvbYIRdGxzY2EtZXhhbXBsZS1jb22C
+        CWxvY2FsaG9zdIcEfwAAATAKBggqhkjOPQQDAgNIADBFAiASvcDyLFNCucIeejvj
+        nAKHqZNPYGlnVTnLvDkIdSQwYgIhAMUE8bxIbX6u8BghJ/7Gi95wHgScxK+sIfYJ
+        xYp6p1Zv
+        -----END CERTIFICATE-----
+
+  "orderer2.example.com":
+    "url": "grpcs://34.87.41.29:7011"
+    "grpcOptions":
+      "ssl-target-name-override": "orderer2.example.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIICojCCAkigAwIBAgIUIyn7TRA0vv2uAMcDl8oE4vGIgH8wCgYIKoZIzj0EAwIw
+        ajELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMRQwEgYDVQQKDAtleGFtcGxlLmNvbTEaMBgGA1UEAwwRdGxzY2Eu
+        ZXhhbXBsZS5jb20wHhcNMjExMjEzMDkwNDM4WhcNMzExMjExMDkwNDM4WjBqMQsw
+        CQYDVQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1Jh
+        bGVpZ2gxFDASBgNVBAoMC2V4YW1wbGUuY29tMRowGAYDVQQDDBF0bHNjYS5leGFt
+        cGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOpnx9TxnVJCBbafd47n
+        mwlwK5lPFOMJuDs/ACq8DuNqhJJAAeH6ElUt9G/9plb9rYiXtSBZhka+5SJn8Y7s
+        QwmjgcswgcgwHQYDVR0OBBYEFKuw1/YIfOWvOT366THh+9D4v9PhMB8GA1UdIwQY
+        MBaAFKuw1/YIfOWvOT366THh+9D4v9PhMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0P
+        AQH/BAQDAgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBGBgNVHREE
+        PzA9hwQiVykdghF0bHNjYS5leGFtcGxlLmNvbYIRdGxzY2EtZXhhbXBsZS1jb22C
+        CWxvY2FsaG9zdIcEfwAAATAKBggqhkjOPQQDAgNIADBFAiASvcDyLFNCucIeejvj
+        nAKHqZNPYGlnVTnLvDkIdSQwYgIhAMUE8bxIbX6u8BghJ/7Gi95wHgScxK+sIfYJ
+        xYp6p1Zv
+        -----END CERTIFICATE-----
+
+"peers":
+  "manager.supplier.voucher.com":
+    "url": "grpcs://34.87.41.29:7002"
+    "grpcOptions":
+      "ssl-target-name-override": "manager.supplier.voucher.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIIC3DCCAoKgAwIBAgIUI8dkOYrRBo3YIxZiEsTycsaVQFkwCgYIKoZIzj0EAwIw
+        fTELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3VjaGVyLmNvbTEkMCIGA1UE
+        AwwbdGxzY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMB4XDTIxMTIxMzA5MDUwNVoX
+        DTMxMTIxMTA5MDUwNVowfTELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENh
+        cm9saW5hMRAwDgYDVQQHDAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3Vj
+        aGVyLmNvbTEkMCIGA1UEAwwbdGxzY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMFkw
+        EwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENDA7aKvrbwkYeFro/dBSK+pDjHDBWShR
+        79zu9YXLBZW6kqm03ZMOLtcTYE0U+RmWGGti9ag5YdYy756hr1sCSqOB3zCB3DAd
+        BgNVHQ4EFgQUTmxo/iKATRXFshzueytNCpElfN4wHwYDVR0jBBgwFoAUTmxo/iKA
+        TRXFshzueytNCpElfN4wDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAaYw
+        HQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMFoGA1UdEQRTMFGHBCJXKR2C
+        G3Rsc2NhMS5zdXBwbGllci52b3VjaGVyLmNvbYIbdGxzY2ExLXN1cHBsaWVyLXZv
+        dWNoZXItY29tgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgaDvH
+        lULGq7RiClC3Fs97hK72piK0lcYijuSTZ6l1skoCIQCHw0NjAIYJgGRHUwlCGnG7
+        UhmwgcmzP9Xf8QS1HWexpw==
+        -----END CERTIFICATE-----
+
+  "user.supplier.voucher.com":
+    "url": "grpcs://34.87.41.29:7003"
+    "grpcOptions":
+      "ssl-target-name-override": "user.supplier.voucher.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIIC3DCCAoKgAwIBAgIUI8dkOYrRBo3YIxZiEsTycsaVQFkwCgYIKoZIzj0EAwIw
+        fTELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3VjaGVyLmNvbTEkMCIGA1UE
+        AwwbdGxzY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMB4XDTIxMTIxMzA5MDUwNVoX
+        DTMxMTIxMTA5MDUwNVowfTELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENh
+        cm9saW5hMRAwDgYDVQQHDAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3Vj
+        aGVyLmNvbTEkMCIGA1UEAwwbdGxzY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMFkw
+        EwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENDA7aKvrbwkYeFro/dBSK+pDjHDBWShR
+        79zu9YXLBZW6kqm03ZMOLtcTYE0U+RmWGGti9ag5YdYy756hr1sCSqOB3zCB3DAd
+        BgNVHQ4EFgQUTmxo/iKATRXFshzueytNCpElfN4wHwYDVR0jBBgwFoAUTmxo/iKA
+        TRXFshzueytNCpElfN4wDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAaYw
+        HQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMFoGA1UdEQRTMFGHBCJXKR2C
+        G3Rsc2NhMS5zdXBwbGllci52b3VjaGVyLmNvbYIbdGxzY2ExLXN1cHBsaWVyLXZv
+        dWNoZXItY29tgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgaDvH
+        lULGq7RiClC3Fs97hK72piK0lcYijuSTZ6l1skoCIQCHw0NjAIYJgGRHUwlCGnG7
+        UhmwgcmzP9Xf8QS1HWexpw==
+        -----END CERTIFICATE-----
+
+  "peer1.dealer1.voucher.com":
+    "url": "grpcs://34.87.41.29:7004"
+    "grpcOptions":
+      "ssl-target-name-override": "peer1.dealer1.voucher.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIIC1zCCAnygAwIBAgIUEKdxGTVFD7lGaUr/v0SACPRPRfkwCgYIKoZIzj0EAwIw
+        ezELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMRwwGgYDVQQKDBNkZWFsZXIxLnZvdWNoZXIuY29tMSMwIQYDVQQD
+        DBp0bHNjYTEuZGVhbGVyMS52b3VjaGVyLmNvbTAeFw0yMTEyMTMwOTA0MTJaFw0z
+        MTEyMTEwOTA0MTJaMHsxCzAJBgNVBAYTAlVTMRcwFQYDVQQIDA5Ob3J0aCBDYXJv
+        bGluYTEQMA4GA1UEBwwHUmFsZWlnaDEcMBoGA1UECgwTZGVhbGVyMS52b3VjaGVy
+        LmNvbTEjMCEGA1UEAwwadGxzY2ExLmRlYWxlcjEudm91Y2hlci5jb20wWTATBgcq
+        hkjOPQIBBggqhkjOPQMBBwNCAARxm8NN+PMEU1lWl/y9qhOEcgL/Vewc3bnWFw+w
+        b0KxkWx2Kma1CjwP24jfkSaF12ayJA4m3iv3em0Mo+6OvVLTo4HdMIHaMB0GA1Ud
+        DgQWBBR49mF9g0g7DYVL6D4GsqNOdcrxqjAfBgNVHSMEGDAWgBR49mF9g0g7DYVL
+        6D4GsqNOdcrxqjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBpjAdBgNV
+        HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwWAYDVR0RBFEwT4cEIlcpHYIadGxz
+        Y2ExLmRlYWxlcjEudm91Y2hlci5jb22CGnRsc2NhMS1kZWFsZXIxLXZvdWNoZXIt
+        Y29tgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIhAJrF2s/JWzZl
+        Qv8eLsOx6+FznS4fhe+8ScurV9iRSUygAiEAlRoZZtLU+w/1t8e4JB48ylzErv3d
+        C0YMlukHXUkmkZ0=
+        -----END CERTIFICATE-----
+
+  "peer2.dealer1.voucher.com":
+    "url": "grpcs://34.87.41.29:7005"
+    "grpcOptions":
+      "ssl-target-name-override": "peer2.dealer1.voucher.com"
+    "tlsCACerts":
+      "pem": |
+        -----BEGIN CERTIFICATE-----
+        MIIC1zCCAnygAwIBAgIUEKdxGTVFD7lGaUr/v0SACPRPRfkwCgYIKoZIzj0EAwIw
+        ezELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMRwwGgYDVQQKDBNkZWFsZXIxLnZvdWNoZXIuY29tMSMwIQYDVQQD
+        DBp0bHNjYTEuZGVhbGVyMS52b3VjaGVyLmNvbTAeFw0yMTEyMTMwOTA0MTJaFw0z
+        MTEyMTEwOTA0MTJaMHsxCzAJBgNVBAYTAlVTMRcwFQYDVQQIDA5Ob3J0aCBDYXJv
+        bGluYTEQMA4GA1UEBwwHUmFsZWlnaDEcMBoGA1UECgwTZGVhbGVyMS52b3VjaGVy
+        LmNvbTEjMCEGA1UEAwwadGxzY2ExLmRlYWxlcjEudm91Y2hlci5jb20wWTATBgcq
+        hkjOPQIBBggqhkjOPQMBBwNCAARxm8NN+PMEU1lWl/y9qhOEcgL/Vewc3bnWFw+w
+        b0KxkWx2Kma1CjwP24jfkSaF12ayJA4m3iv3em0Mo+6OvVLTo4HdMIHaMB0GA1Ud
+        DgQWBBR49mF9g0g7DYVL6D4GsqNOdcrxqjAfBgNVHSMEGDAWgBR49mF9g0g7DYVL
+        6D4GsqNOdcrxqjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBpjAdBgNV
+        HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwWAYDVR0RBFEwT4cEIlcpHYIadGxz
+        Y2ExLmRlYWxlcjEudm91Y2hlci5jb22CGnRsc2NhMS1kZWFsZXIxLXZvdWNoZXIt
+        Y29tgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIhAJrF2s/JWzZl
+        Qv8eLsOx6+FznS4fhe+8ScurV9iRSUygAiEAlRoZZtLU+w/1t8e4JB48ylzErv3d
+        C0YMlukHXUkmkZ0=
+        -----END CERTIFICATE-----
+
+"certificateAuthorities":
+  "ca1.supplier.voucher.com":
+    "url": "https://34.87.41.29:7000"
+    "tlsCACerts":
+      "pem":
+      - |
+        -----BEGIN CERTIFICATE-----
+        MIIC0DCCAnagAwIBAgIUKMoe3bA/2wZ3WoW6daKcwUK2jFIwCgYIKoZIzj0EAwIw
+        ejELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3VjaGVyLmNvbTEhMB8GA1UE
+        AwwYY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMB4XDTIxMTIxMzA5MDUwNVoXDTMx
+        MTIxMTA5MDUwNVowejELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9s
+        aW5hMRAwDgYDVQQHDAdSYWxlaWdoMR0wGwYDVQQKDBRzdXBwbGllci52b3VjaGVy
+        LmNvbTEhMB8GA1UEAwwYY2ExLnN1cHBsaWVyLnZvdWNoZXIuY29tMFkwEwYHKoZI
+        zj0CAQYIKoZIzj0DAQcDQgAEGNAXUPNrTL/t20Nj7Kqe9Wcx3TIieFCnxkFyrT53
+        eJ/ARUvDgGzDGFtdu1cCmrSa6/00H896bHudVzzUGQu8raOB2TCB1jAdBgNVHQ4E
+        FgQU4o437Q8W0nnu5NTGPlgDCvlSWwYwHwYDVR0jBBgwFoAU4o437Q8W0nnu5NTG
+        PlgDCvlSWwYwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0l
+        BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMFQGA1UdEQRNMEuHBCJXKR2CGGNhMS5z
+        dXBwbGllci52b3VjaGVyLmNvbYIYY2ExLXN1cHBsaWVyLXZvdWNoZXItY29tggls
+        b2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDSAAwRQIgR3cuvUkM8Vdfc3Xdrq8L
+        lOTYqaYlWeIub1AwoHNRWjUCIQDINksIo4jml+cDetZ6MkL9v80vYZlFRjaOyGRA
+        h2Tw3A==
+        -----END CERTIFICATE-----
+
+    "httpOptions":
+      "verify": "false"
+    "caName": "ca1"
+    "registrar":
+      "enrollId": "admin"
+      "enrollSecret": "adminpw"
+  "ca1.dealer1.voucher.com":
+    "url": "https://34.87.41.29:7001"
+    "tlsCACerts":
+      "pem":
+      - |
+        -----BEGIN CERTIFICATE-----
+        MIICyzCCAnCgAwIBAgIUTTE0/EQOsVrOfXm6SZTHq2U+f20wCgYIKoZIzj0EAwIw
+        eDELMAkGA1UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYDVQQH
+        DAdSYWxlaWdoMRwwGgYDVQQKDBNkZWFsZXIxLnZvdWNoZXIuY29tMSAwHgYDVQQD
+        DBdjYTEuZGVhbGVyMS52b3VjaGVyLmNvbTAeFw0yMTEyMTMwOTA0MTFaFw0zMTEy
+        MTEwOTA0MTFaMHgxCzAJBgNVBAYTAlVTMRcwFQYDVQQIDA5Ob3J0aCBDYXJvbGlu
+        YTEQMA4GA1UEBwwHUmFsZWlnaDEcMBoGA1UECgwTZGVhbGVyMS52b3VjaGVyLmNv
+        bTEgMB4GA1UEAwwXY2ExLmRlYWxlcjEudm91Y2hlci5jb20wWTATBgcqhkjOPQIB
+        BggqhkjOPQMBBwNCAATAWzQgdFHNyXYatd+Dr3D8ag1h9kZRAGZkOd82WTcK5Ds8
+        GdMC0PibZgJU0ADzQ4W3pcYOdYmhPji1TCGZaav6o4HXMIHUMB0GA1UdDgQWBBSf
+        gcNcZVWl68Ff0nFep5x/iIUMYjAfBgNVHSMEGDAWgBSfgcNcZVWl68Ff0nFep5x/
+        iIUMYjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBpjAdBgNVHSUEFjAU
+        BggrBgEFBQcDAQYIKwYBBQUHAwIwUgYDVR0RBEswSYcEIlcpHYIXY2ExLmRlYWxl
+        cjEudm91Y2hlci5jb22CF2NhMS1kZWFsZXIxLXZvdWNoZXItY29tgglsb2NhbGhv
+        c3SHBH8AAAEwCgYIKoZIzj0EAwIDSQAwRgIhAKDEvmT5yBDhVBjbp7NDRfuf1KtS
+        zT/rPMXRNQvdMBauAiEAmStZ06G6FFrG5EPW6gZBBsf9qppUUvbt4GFFLx4VJhw=
+        -----END CERTIFICATE-----
+
+    "httpOptions":
+      "verify": "false"
+    "caName": "ca1"
+    "registrar":
+      "enrollId": "admin"
+      "enrollSecret": "adminpw"
+
+"entityMatchers":
+  "orderer":
+  - "mappedHost": "orderer1.example.com"
+    "pattern": "(\\w*)orderer1.example.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "orderer1.example.com"
+    "urlSubstitutionExp": "34.87.41.29:7010"
+  - "mappedHost": "orderer2.example.com"
+    "pattern": "(\\w*)orderer2.example.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "orderer2.example.com"
+    "urlSubstitutionExp": "34.87.41.29:7011"
+  
+  "peer":
+  - "mappedHost": "manager.supplier.voucher.com"
+    "pattern": "(\\w*)manager.supplier.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "manager.supplier.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7002"
+  - "mappedHost": "user.supplier.voucher.com"
+    "pattern": "(\\w*)user.supplier.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "user.supplier.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7003"
+  - "mappedHost": "peer1.dealer1.voucher.com"
+    "pattern": "(\\w*)peer1.dealer1.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "peer1.dealer1.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7004"
+  - "mappedHost": "peer2.dealer1.voucher.com"
+    "pattern": "(\\w*)peer2.dealer1.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "peer2.dealer1.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7005"
+  
+  "certificateAuthorities":
+  - "mappedHost": "ca1.supplier.voucher.com"
+    "pattern": "(\\w*)ca1.supplier.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "ca1.supplier.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7000"
+  - "mappedHost": "ca1.dealer1.voucher.com"
+    "pattern": "(\\w*)ca1.dealer1.voucher.com(\\w*)"
+    "sslTargetOverrideUrlSubstitutionExp": "ca1.dealer1.voucher.com"
+    "urlSubstitutionExp": "34.87.41.29:7001"

@@ -8,10 +8,13 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import * as csv from 'fast-csv';
 
 import { RoleType } from '../../common/constants/role-type';
 import { PageDto } from '../../common/dto/page.dto';
@@ -90,5 +93,36 @@ export class PackageController {
     @Body() data: PackageCreateDto,
   ): Promise<PackageDto | undefined> {
     return this.packageService.editPackage(dealer, id, data);
+  }
+
+  @Get('export')
+  @HttpCode(HttpStatus.OK)
+  @Auth([RoleType.DEALER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'List of voucher',
+  })
+  async exportListCitizen(
+    @AuthUser() dealer: UserEntity,
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: PageOptionsDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const listCitizen = await this.packageService.getPackage(
+      dealer,
+      pageOptionsDto,
+    );
+
+    res.setHeader('Content-Type', 'application/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=export.csv');
+
+    const csvStream = csv.format({ headers: true });
+    csvStream.pipe(res);
+
+    for (const item of listCitizen.data) {
+      csvStream.write({ ...item });
+    }
+
+    csvStream.end();
   }
 }

@@ -5,7 +5,7 @@ import type { FindConditions } from 'typeorm';
 import type { Optional } from 'types';
 
 import { VoucherRequestType } from '../../common/constants/voucher-request-type';
-import type { VoucherRequestPageOptions } from './Dto/request-page-options.dto';
+import type { VoucherRequestPageOptions, VoucherRequestPageOptionsForManager } from './Dto/request-page-options.dto';
 import type { VoucherRequestCreateDto } from './Dto/voucher-request-create-dto';
 import type { VoucherRequestDto } from './Dto/voucher-request-dto';
 import type { VoucherEntity } from './voucher.entity';
@@ -82,5 +82,20 @@ export class VoucherRequestService {
     return this.voucherRequestRepository.count({
       where: { status: VoucherRequestType.PENDING },
     });
+  }
+
+  async getAllVoucherRequest(
+    pageOptionsDto: VoucherRequestPageOptionsForManager,
+  ): Promise<PageDto<VoucherRequestDto>> {
+    const queryBuilder =
+      this.voucherRequestRepository.createQueryBuilder('request');
+
+    if (pageOptionsDto.status) {
+      queryBuilder.where('status = :status', { status: pageOptionsDto.status });
+    }
+
+    const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
+
+    return items.toPageDto(pageMetaDto);
   }
 }

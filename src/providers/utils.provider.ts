@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import CryptoJS from 'crypto-js';
 

@@ -3,18 +3,26 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Query,
+  Res,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import * as csv from 'fast-csv';
 
 import { RoleType } from '../../common/constants/role-type';
 import { PageDto } from '../../common/dto/page.dto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { CitizenEntity } from '../citizen/citizen.entity';
-import { VoucherRequestPageOptions } from './Dto/request-page-options.dto';
+import {
+  VoucherRequestPageOptions,
+  VoucherRequestPageOptionsForManager,
+} from './Dto/request-page-options.dto';
 import { VoucherRequestCreateDto } from './Dto/voucher-request-create-dto';
 import { VoucherRequestDto } from './Dto/voucher-request-dto';
 import { VoucherRequestService } from './voucher-request.service';
@@ -62,5 +70,34 @@ export class VoucherRequestController {
     @UUIDParam('id') id: string,
   ): Promise<void> {
     return this.voucherRequestService.deleteRequest(user, id);
+  }
+
+  @Get('export')
+  @HttpCode(HttpStatus.OK)
+  @Auth([RoleType.ADMIN, RoleType.GOVERMENT, RoleType.SUPPLIER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'List of voucher',
+  })
+  async exportListCitizen(
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: VoucherRequestPageOptionsForManager,
+    @Res() res: Response,
+  ): Promise<void> {
+    const listCitizen = await this.voucherRequestService.getAllVoucherRequest(
+      pageOptionsDto,
+    );
+
+    res.setHeader('Content-Type', 'application/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=export.csv');
+
+    const csvStream = csv.format({ headers: true });
+    csvStream.pipe(res);
+
+    for (const item of listCitizen.data) {
+      csvStream.write({ ...item });
+    }
+
+    csvStream.end();
   }
 }

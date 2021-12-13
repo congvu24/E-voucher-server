@@ -146,7 +146,7 @@ export class ApiConfigService {
     return {
       connectionPath: path.resolve(
         __dirname,
-        '../../database/hyperledger/profiles/mychannel_connection_for_nodesdk.json',
+        '../../database/hyperledger/profiles/voucherchannel_connection_for_nodesdk.json',
       ),
       walletPath: path.resolve(
         __dirname,

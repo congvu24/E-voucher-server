@@ -18,7 +18,7 @@ export class HyperledgerService {
 
   orgName: string;
 
-  readonly channelName = 'mychannel';
+  readonly channelName = 'voucherchannel';
 
   readonly role = 'Admin';
 

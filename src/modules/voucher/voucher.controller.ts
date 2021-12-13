@@ -3,12 +3,17 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Put,
   Query,
+  Res,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import * as csv from 'fast-csv';
 
 import { RoleType } from '../../common/constants/role-type';
 import { PageDto } from '../../common/dto/page.dto';
@@ -133,5 +138,32 @@ export class VoucherController {
     data: ClaimVoucherDto,
   ): Promise<VoucherDto> {
     return this.voucherService.claimVoucher(data);
+  }
+
+  @Get('export')
+  @HttpCode(HttpStatus.OK)
+  @Auth([RoleType.ADMIN, RoleType.GOVERMENT, RoleType.SUPPLIER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'List of voucher',
+  })
+  async exportListCitizen(
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: VoucherPageOptions,
+    @Res() res: Response,
+  ): Promise<void> {
+    const listCitizen = await this.voucherService.getAllVoucher(pageOptionsDto);
+
+    res.setHeader('Content-Type', 'application/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=export.csv');
+
+    const csvStream = csv.format({ headers: true });
+    csvStream.pipe(res);
+
+    for (const item of listCitizen.data) {
+      csvStream.write({ ...item });
+    }
+
+    csvStream.end();
   }
 }

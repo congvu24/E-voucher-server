@@ -7,10 +7,14 @@ import {
   HttpStatus,
   Post,
   Query,
+  Res,
   UploadedFile,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import * as csv from 'fast-csv';
+import { pipeline } from 'stream/promises';
 
 import { RoleType } from '../../common/constants/role-type';
 import { PageDto } from '../../common/dto/page.dto';
@@ -66,5 +70,32 @@ export class CitizenController {
     pageOptionsDto: CitizenPageOptionsDto,
   ): Promise<PageDto<CitizenDto>> {
     return this.citizenService.getCitizens(pageOptionsDto);
+  }
+
+  @Get('export')
+  @HttpCode(HttpStatus.OK)
+  @Auth([RoleType.ADMIN, RoleType.GOVERMENT, RoleType.SUPPLIER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'List of citizen',
+  })
+  async exportListCitizen(
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: CitizenPageOptionsDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const listCitizen = await this.citizenService.getCitizens(pageOptionsDto);
+
+    res.setHeader('Content-Type', 'application/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=export.csv');
+
+    const csvStream = csv.format({ headers: true });
+    csvStream.pipe(res);
+
+    for (const item of listCitizen.data) {
+      csvStream.write({ ...item });
+    }
+
+    csvStream.end();
   }
 }

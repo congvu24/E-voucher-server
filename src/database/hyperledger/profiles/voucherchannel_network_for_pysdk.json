@@ -1,0 +1,140 @@
+{
+  "name": "fabric-network",
+  "description": "Generated network configuration file",
+  "version": "0.1",
+  "client": {
+    "organization": "supplier.voucher.com",
+    "credentialStore": {
+      "path": "/tmp/hfc-kvs",
+      "cryptoStore": {
+        "path": "/tmp/hfc-cvs"
+      },
+      "wallet": "wallet-name"
+    }
+  },
+  "organizations": {
+    "dealer1.voucher.com": {
+      "mspid": "dealer1-voucher-com",
+      "peers": [
+        "peer1.dealer1.voucher.com",
+        "peer2.dealer1.voucher.com"
+      ],
+      "users": {
+        "Admin": {
+          "cert": "/keyfiles/peerOrganizations/dealer1.voucher.com/users/Admin@dealer1.voucher.com/msp/signcerts/Admin@dealer1.voucher.com-cert.pem",
+          "private_key": "/keyfiles/peerOrganizations/dealer1.voucher.com/users/Admin@dealer1.voucher.com/msp/keystore/priv_sk"
+        }
+      }
+    },
+    "example.com": {
+      "mspid": "example-com",
+      "orderers": [
+        "orderer1.example.com",
+        "orderer2.example.com"
+      ],
+      "users": {
+        "Admin": {
+          "cert": "/keyfiles/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem",
+          "private_key": "/keyfiles/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/priv_sk"
+        }
+      }
+    },
+    "supplier.voucher.com": {
+      "mspid": "supplier-voucher-com",
+      "peers": [
+        "manager.supplier.voucher.com",
+        "user.supplier.voucher.com"
+      ],
+      "users": {
+        "Admin": {
+          "cert": "/keyfiles/peerOrganizations/supplier.voucher.com/users/Admin@supplier.voucher.com/msp/signcerts/Admin@supplier.voucher.com-cert.pem",
+          "private_key": "/keyfiles/peerOrganizations/supplier.voucher.com/users/Admin@supplier.voucher.com/msp/keystore/priv_sk"
+        }
+      }
+    }
+  },
+  "orderers": {
+    "orderer1.example.com": {
+      "url": "34.87.41.29:7010",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "orderer1.example.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/ca.crt"
+      }
+    },
+    "orderer2.example.com": {
+      "url": "34.87.41.29:7011",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "orderer2.example.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/ca.crt"
+      }
+    }
+  },
+  "peers": {
+    "manager.supplier.voucher.com": {
+      "url": "34.87.41.29:7002",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "manager.supplier.voucher.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/supplier.voucher.com/peers/manager.supplier.voucher.com/tls/ca.crt"
+      }
+    },
+    "user.supplier.voucher.com": {
+      "url": "34.87.41.29:7003",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "user.supplier.voucher.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/supplier.voucher.com/peers/user.supplier.voucher.com/tls/ca.crt"
+      }
+    },
+    "peer1.dealer1.voucher.com": {
+      "url": "34.87.41.29:7004",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "peer1.dealer1.voucher.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/dealer1.voucher.com/peers/peer1.dealer1.voucher.com/tls/ca.crt"
+      }
+    },
+    "peer2.dealer1.voucher.com": {
+      "url": "34.87.41.29:7005",
+      "grpcOptions": {
+        "grpc.ssl_target_name_override": "peer2.dealer1.voucher.com",
+        "grpc-max-send-message-length": 15
+      },
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/dealer1.voucher.com/peers/peer2.dealer1.voucher.com/tls/ca.crt"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca1.supplier.voucher.com": {
+      "url": "https://34.87.41.29:7000",
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/supplier.voucher.com/ca/ca1.supplier.voucher.com-cert.pem"
+      },
+      "httpOptions": { "verify": "false" },
+      "caName": "ca1",
+      "registrar": { "enrollId": "admin", "enrollSecret": "adminpw" }
+    },
+    "ca1.dealer1.voucher.com": {
+      "url": "https://34.87.41.29:7001",
+      "tlsCACerts": {
+        "path": "/keyfiles/peerOrganizations/dealer1.voucher.com/ca/ca1.dealer1.voucher.com-cert.pem"
+      },
+      "httpOptions": { "verify": "false" },
+      "caName": "ca1",
+      "registrar": { "enrollId": "admin", "enrollSecret": "adminpw" }
+    }
+  }
+}
