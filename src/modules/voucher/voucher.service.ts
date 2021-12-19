@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
@@ -106,6 +107,8 @@ export class VoucherService {
     citizen: CitizenEntity,
     pageOptions: VoucherPageOptions,
   ): Promise<PageDto<VoucherDto>> {
+    this.websocket.claimSuccess('dasdasd');
+
     const queryBuilder = this.voucherRepository
       .createQueryBuilder('voucher')
       .where({ citizen });
