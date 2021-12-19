@@ -22,6 +22,7 @@ import { QrcodeModule } from './modules/qrcode/qrcode.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { UserModule } from './modules/user/user.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
 
@@ -71,6 +72,7 @@ import { SharedModule } from './shared/shared.module';
     LedgerModule,
     QrcodeModule,
     AnalyticsModule,
+    WebsocketModule,
   ],
 })
 export class AppModule implements NestModule {

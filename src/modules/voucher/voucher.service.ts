@@ -19,6 +19,7 @@ import { LedgerService } from '../../modules/ledger/ledger.service';
 import { PackageService } from '../../modules/package/package.service';
 import { QrcodeService } from '../../modules/qrcode/qrcode.service';
 import { RedisCacheService } from '../../modules/redis-cache/redis-cache.service';
+import { WebsocketService } from '../../modules/websocket/websocket.service';
 import { ContextProvider } from '../../providers/context.provider';
 import { UtilsProvider } from '../../providers/utils.provider';
 import type { ClaimVoucherDto } from './Dto/claim-voucher-dto';
@@ -40,6 +41,7 @@ export class VoucherService {
     private readonly packageService: PackageService,
     private readonly ledgerService: LedgerService,
     private readonly qrCodeService: QrcodeService,
+    private readonly websocket: WebsocketService,
     private readonly cache: RedisCacheService, // private readonly cacheManager: Cache,
   ) {}
 
@@ -227,6 +229,8 @@ export class VoucherService {
       voucherId: data.voucherId,
       value: voucher.value,
     });
+
+    this.websocket.claimSuccess(data.voucherId);
 
     return voucher;
   }
