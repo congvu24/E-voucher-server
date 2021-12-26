@@ -21,10 +21,18 @@ export class PackageDto extends AbstractDto {
   @ApiPropertyOptional()
   dealer: UserDto;
 
+  @ApiPropertyOptional()
+  maxValue: number;
+
+  @ApiPropertyOptional()
+  minValue: number;
+
   constructor(item: PackageEntity, options?: PackageDtoOptions) {
     super(item);
     this.name = item.name;
     this.description = item.description;
+    this.maxValue = item.maxValue;
+    this.minValue = item.minValue;
     this.dealer = item.dealer?.toDto();
   }
 }
