@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   Query,
   Res,
   ValidationPipe,
@@ -57,6 +58,15 @@ export class VoucherRequestController {
     pageOptionsDto: VoucherRequestPageOptions,
   ): Promise<PageDto<VoucherRequestDto>> {
     return this.voucherRequestService.getVoucherRequest(user, pageOptionsDto);
+  }
+
+  @Put('/reject/:id')
+  @Auth([RoleType.SUPPLIER])
+  @ApiOkResponse({
+    description: 'Reject successfully',
+  })
+  async rejectRequest(@UUIDParam('id') id: string): Promise<VoucherRequestDto> {
+    return this.voucherRequestService.rejectRequest(id);
   }
 
   @Delete(':id')

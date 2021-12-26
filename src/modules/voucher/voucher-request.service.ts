@@ -5,7 +5,10 @@ import type { FindConditions } from 'typeorm';
 import type { Optional } from 'types';
 
 import { VoucherRequestType } from '../../common/constants/voucher-request-type';
-import type { VoucherRequestPageOptions, VoucherRequestPageOptionsForManager } from './Dto/request-page-options.dto';
+import type {
+  VoucherRequestPageOptions,
+  VoucherRequestPageOptionsForManager,
+} from './Dto/request-page-options.dto';
 import type { VoucherRequestCreateDto } from './Dto/voucher-request-create-dto';
 import type { VoucherRequestDto } from './Dto/voucher-request-dto';
 import type { VoucherEntity } from './voucher.entity';
@@ -97,5 +100,21 @@ export class VoucherRequestService {
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 
     return items.toPageDto(pageMetaDto);
+  }
+
+  async rejectRequest(id: string): Promise<VoucherRequestDto> {
+    const request = await this.voucherRequestRepository.findOne(id, {
+      relations: ['citizen'],
+    });
+
+    if (!request || request.status !== VoucherRequestType.PENDING)
+      throw new NotFoundException();
+
+    await this.voucherRequestRepository.update(
+      { id },
+      { status: VoucherRequestType.REJECTED },
+    );
+
+    return request?.toDto();
   }
 }
