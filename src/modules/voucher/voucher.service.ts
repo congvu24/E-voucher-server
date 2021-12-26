@@ -135,6 +135,12 @@ export class VoucherService {
       });
     }
 
+    if (pageOptions.type) {
+      queryBuilder.andWhere('type = :type', {
+        type: pageOptions.type,
+      });
+    }
+
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
 
     return items.toPageDto(pageMetaDto);
