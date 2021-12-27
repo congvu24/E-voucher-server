@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators/use-dto.decorator';
@@ -33,4 +33,7 @@ export class PackageEntity extends AbstractEntity<
 
   @OneToMany(() => VoucherClaimEntity, (claim) => claim.servicePackage)
   claims: UserEntity[];
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
