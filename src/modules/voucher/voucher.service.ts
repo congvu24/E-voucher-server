@@ -297,6 +297,7 @@ export class VoucherService {
         key: data.key,
         supplier_id: data.supplier_id,
         citizen_id: data.citizen_id,
+        request_id: id,
       });
 
       await this.cache.set(id, url);
