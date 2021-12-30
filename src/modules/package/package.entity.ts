@@ -1,4 +1,10 @@
-import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators/use-dto.decorator';
@@ -27,6 +33,9 @@ export class PackageEntity extends AbstractEntity<
 
   @Column({ nullable: false, default: true })
   isShow: boolean;
+
+  @Column({ nullable: true })
+  thumbnail: string;
 
   @ManyToOne(() => UserEntity, (dealer) => dealer.packages)
   dealer: UserEntity;

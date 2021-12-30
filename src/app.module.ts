@@ -3,6 +3,7 @@ import './boilerplate.polyfill';
 import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as redisStore from 'cache-manager-redis-store';
 import { I18nJsonParser, I18nModule } from 'nestjs-i18n';
@@ -31,6 +32,10 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
     UserModule,
     PostModule,
+    ServeStaticModule.forRoot({
+      serveRoot: '/upload',
+      rootPath: path.join(__dirname, '..', 'upload'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',

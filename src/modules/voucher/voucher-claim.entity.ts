@@ -18,6 +18,12 @@ export class VoucherClaimEntity extends AbstractEntity<
   @Column({ default: 0 })
   value: number;
 
+  @Column({ nullable: true })
+  citizenName: string;
+
+  @Column({ nullable: true })
+  citizenEmail: string;
+
   @ManyToOne(() => PackageEntity, (servicePackage) => servicePackage.claims)
   servicePackage: PackageEntity;
 }

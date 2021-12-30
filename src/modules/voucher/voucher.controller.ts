@@ -19,6 +19,7 @@ import { RoleType } from '../../common/constants/role-type';
 import { PageDto } from '../../common/dto/page.dto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
+import { UserEntity } from '../../modules/user/user.entity';
 import { CitizenEntity } from '../citizen/citizen.entity';
 import { ClaimVoucherDto } from './Dto/claim-voucher-dto';
 import {
@@ -70,6 +71,21 @@ export class VoucherController {
     pageOptionsDto: VoucherPageOptions,
   ): Promise<PageDto<VoucherDto>> {
     return this.voucherService.getMyVoucher(user, pageOptionsDto);
+  }
+
+  @Get('/claimed')
+  @ApiTags('dealer')
+  @Auth([RoleType.DEALER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'Get list voucher',
+  })
+  getAllVoucherClaimed(
+    @AuthUser() dealer: UserEntity,
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: VoucherPageOptions,
+  ): Promise<PageDto<VoucherDto>> {
+    return this.voucherService.getAllVoucherClaimed(dealer.id, pageOptionsDto);
   }
 
   @Get('')

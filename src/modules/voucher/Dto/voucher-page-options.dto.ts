@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { ApiPropertyOptional } from '@nestjs/swagger/dist/decorators/api-property.decorator';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 import { VoucherStatusType } from '../../../common/constants/voucher-status-type';
 import { HelpLevelType } from '../../../common/constants/help-level-type';
@@ -22,4 +22,9 @@ export class VoucherPageOptions extends PageOptionsDto {
   @IsEnum(HelpLevelType)
   @IsOptional()
   readonly type?: HelpLevelType;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  readonly citizenName?: string;
 }

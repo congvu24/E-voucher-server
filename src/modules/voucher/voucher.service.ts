@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import type { PageDto } from 'common/dto/page.dto';
-import type { CitizenEntity } from 'modules/citizen/citizen.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 import { HelpLevelValue } from '../../common/constants/help-level-type';
 import { VOUCHER_VALID_DAY } from '../../common/constants/number';
 import { VoucherStatusType } from '../../common/constants/voucher-status-type';
+import { CitizenEntity } from '../../modules/citizen/citizen.entity';
 import { LedgerService } from '../../modules/ledger/ledger.service';
 import { PackageService } from '../../modules/package/package.service';
 import { QrcodeService } from '../../modules/qrcode/qrcode.service';
@@ -29,6 +29,7 @@ import { VoucherCreateDto } from './Dto/voucher-create-dto';
 import type { VoucherDto } from './Dto/voucher-dto';
 import type { VoucherPageOptions } from './Dto/voucher-page-options.dto';
 import type { VoucherQR } from './Dto/voucher-qr-dto';
+import { VoucherEntity } from './voucher.entity';
 import { VoucherRepository } from './voucher.repository';
 import { VoucherClaimRepository } from './voucher-claim.repository';
 import { VoucherRequestService } from './voucher-request.service';
@@ -146,6 +147,28 @@ export class VoucherService {
     return items.toPageDto(pageMetaDto);
   }
 
+  async getAllVoucherClaimed(
+    dealerId: string,
+    pageOptions: VoucherPageOptions,
+  ): Promise<PageDto<VoucherDto>> {
+    const queryBuilder =
+      this.voucherClaimRepository.createQueryBuilder('claim');
+
+    queryBuilder
+      .leftJoinAndSelect('claim.servicePackage', 'package')
+      .where('package.dealer_id = :dealerId', { dealerId });
+
+    if (pageOptions.citizenName) {
+      queryBuilder.andWhere('claim.citizen_name = :name', {
+        name: pageOptions.citizenName,
+      });
+    }
+
+    const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
+
+    return items.toPageDto(pageMetaDto);
+  }
+
   async cancelVoucher(citizen: CitizenEntity, id: string): Promise<VoucherDto> {
     const voucher = await this.voucherRepository.findOne(id, {
       relations: ['citizen'],
@@ -187,6 +210,10 @@ export class VoucherService {
       data.supplierId,
       data.citizenId,
     );
+
+    const voucherInDB = await this.voucherRepository.findOne(data.voucherId, {
+      relations: ['citizen'],
+    });
 
     const servicePackage = await this.packageService.findOne({
       id: data.packageId,
@@ -237,6 +264,8 @@ export class VoucherService {
       servicePackage,
       voucherId: data.voucherId,
       value: voucher.value,
+      citizenName: voucherInDB?.citizen.name,
+      citizenEmail: voucherInDB?.citizen.email,
     });
 
     this.websocket.claimSuccess(data.voucherId);

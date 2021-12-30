@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PageDto } from 'common/dto/page.dto';
 import type { PageOptionsDto } from 'common/dto/page-options.dto';
+import fs from 'fs';
 import type { IFile } from 'interfaces/IFile';
 import type { FindConditions } from 'typeorm';
 import type { Optional } from 'types';
@@ -10,6 +11,7 @@ import type { PackageCreateDto } from './dto/create-package-dto';
 import type { PackageDto } from './dto/package-dto';
 import type { PackageEntity } from './package.entity';
 import { PackageRepository } from './package.repository';
+import { PackagePageOptions } from './dto/package-page-options.dto';
 
 @Injectable()
 export class PackageService {
@@ -31,12 +33,18 @@ export class PackageService {
     data: PackageCreateDto,
     file?: IFile,
   ): Promise<PackageDto> {
-    const newPackage = this.packageRepository.create(data);
-    newPackage.dealer = dealer;
+    let thumbnail = '';
 
     if (file) {
-      console.log(file);
+      fs.writeFileSync(`upload/${file.originalname}`, file.buffer);
+      thumbnail = `upload/${file.originalname}`;
     }
+
+    const newPackage = this.packageRepository.create({
+      ...data,
+      thumbnail: thumbnail ?? '',
+    });
+    newPackage.dealer = dealer;
 
     await this.packageRepository.save(newPackage);
 
@@ -45,11 +53,14 @@ export class PackageService {
 
   async getPackage(
     dealer: UserEntity,
-    pageOptions: PageOptionsDto,
+    pageOptions: PackagePageOptions,
   ): Promise<PageDto<PackageDto>> {
     const queryBuilder = this.packageRepository
       .createQueryBuilder('package')
       .where('package.dealer_id = :id', { id: dealer.id })
+      .andWhere('LOWER(package.name) like LOWER(:name)', {
+        name: `%${pageOptions.name ?? ''}%`,
+      })
       .orderBy('package.created_at', pageOptions.order);
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);

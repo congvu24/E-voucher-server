@@ -22,10 +22,12 @@ import { PageOptionsDto } from '../../common/dto/page-options.dto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { ApiFile } from '../../decorators/swagger.schema';
+import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
 import { UserEntity } from '../../modules/user/user.entity';
 import { PackageCreateDto } from './dto/create-package-dto';
 import { PackageDto } from './dto/package-dto';
+import { PackagePageOptions } from './dto/package-page-options.dto';
 import { PackageService } from './package.service';
 
 @Controller('package')
@@ -46,6 +48,12 @@ export class PackageController {
     @Body() data: PackageCreateDto,
     @UploadedFile() file: IFile,
   ): Promise<PackageDto> {
+    const listAccept = ['image/jpeg', 'image/jpg', 'image/png'];
+
+    if (!listAccept.includes(file.mimetype)) {
+      throw new FileNotImageException();
+    }
+
     return this.packageService.createPackage(dealer, data, file);
   }
 
@@ -59,7 +67,7 @@ export class PackageController {
   async getPackage(
     @AuthUser() dealer: UserEntity,
     @Query(new ValidationPipe({ transform: true }))
-    pageOptions: PageOptionsDto,
+    pageOptions: PackagePageOptions,
   ): Promise<PageDto<PackageDto>> {
     return this.packageService.getPackage(dealer, pageOptions);
   }

@@ -27,12 +27,16 @@ export class PackageDto extends AbstractDto {
   @ApiPropertyOptional()
   minValue: number;
 
+  @ApiPropertyOptional()
+  thumbnail: string;
+
   constructor(item: PackageEntity, options?: PackageDtoOptions) {
     super(item);
     this.name = item.name;
     this.description = item.description;
     this.maxValue = item.maxValue;
     this.minValue = item.minValue;
+    this.thumbnail = item.thumbnail;
     this.dealer = item.dealer?.toDto();
   }
 }
