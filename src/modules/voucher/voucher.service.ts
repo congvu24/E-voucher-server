@@ -223,22 +223,22 @@ export class VoucherService {
       throw new NotFoundException();
     }
 
-    if (
-      voucher.value < servicePackage.minValue ||
-      voucher.value > servicePackage.maxValue
-    ) {
-      throw new HttpException(
-        'This package is beyond the value of voucher',
-        HttpStatus.CONFLICT,
-      );
-    }
+    // if (
+    //   voucher.value < servicePackage.minValue ||
+    //   voucher.value > servicePackage.maxValue
+    // ) {
+    //   throw new HttpException(
+    //     'This package is beyond the value of voucher',
+    //     HttpStatus.CONFLICT,
+    //   );
+    // }
 
-    if (voucher.validDate < new Date()) {
-      throw new HttpException(
-        'This voucher is out of date',
-        HttpStatus.CONFLICT,
-      );
-    }
+    // if (voucher.validDate < new Date()) {
+    //   throw new HttpException(
+    //     'This voucher is out of date',
+    //     HttpStatus.CONFLICT,
+    //   );
+    // }
 
     if (voucher.status !== VoucherStatusType.UNUSE) {
       throw new HttpException('This voucher is redeemed', HttpStatus.CONFLICT);
@@ -297,7 +297,7 @@ export class VoucherService {
         key: data.key,
         supplier_id: data.supplier_id,
         citizen_id: data.citizen_id,
-        request_id: id,
+        voucher_id: id,
       });
 
       await this.cache.set(id, url);
