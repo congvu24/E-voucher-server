@@ -28,19 +28,16 @@ export class PackageCreateDto {
   description: string;
 
   @ApiPropertyOptional()
-  @IsNumber()
   @IsOptional()
   @Column()
   minValue: number;
 
   @ApiPropertyOptional()
-  @IsNumber()
   @IsOptional()
   @Column()
   maxValue: number;
 
   @ApiPropertyOptional()
-  @IsBoolean()
   @IsOptional()
   @Column()
   isShow: boolean;
