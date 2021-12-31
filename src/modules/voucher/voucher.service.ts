@@ -293,6 +293,13 @@ export class VoucherService {
     if (find !== undefined) {
       url = await this.cache.get(id);
     } else {
+      console.log({
+        key: data.key,
+        supplier_id: data.supplier_id,
+        citizen_id: data.citizen_id,
+        voucher_id: id,
+      });
+
       url = await this.qrCodeService.createQRCode({
         key: data.key,
         supplier_id: data.supplier_id,

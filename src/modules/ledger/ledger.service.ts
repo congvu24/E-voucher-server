@@ -85,10 +85,8 @@ export class LedgerService {
         return undefined;
       }
 
-      Logger.log('Result', result.toString());
-
       return this.tranformToVoucher(
-        JSON.parse(result.toString())[0].Record.toString(),
+        JSON.stringify(JSON.parse(result.toString())[0]['Record']),
       );
     } catch (error) {
       Logger.error(error);
