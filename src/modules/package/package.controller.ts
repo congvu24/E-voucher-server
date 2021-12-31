@@ -50,7 +50,7 @@ export class PackageController {
   ): Promise<PackageDto> {
     const listAccept = ['image/jpeg', 'image/jpg', 'image/png'];
 
-    if (!listAccept.includes(file.mimetype)) {
+    if (file && !listAccept.includes(file.mimetype)) {
       throw new FileNotImageException();
     }
 
