@@ -17,6 +17,12 @@ export class VoucherClaimDto extends AbstractDto {
   value: number;
 
   @ApiPropertyOptional()
+  citizenName: string;
+
+  @ApiPropertyOptional()
+  citizenEmail: string;
+
+  @ApiPropertyOptional()
   servicePackage: PackageDto;
 
   @ApiPropertyOptional()
@@ -29,6 +35,8 @@ export class VoucherClaimDto extends AbstractDto {
     super(claim);
     this.id = claim.id;
     this.voucherId = claim.id;
+    this.citizenName = claim.citizenName;
+    this.citizenEmail = claim.citizenEmail;
     this.value = claim.value;
     this.servicePackage = claim.servicePackage?.toDto();
     this.citizen = claim['citizen']?.toDto();
