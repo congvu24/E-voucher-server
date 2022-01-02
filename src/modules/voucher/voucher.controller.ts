@@ -22,6 +22,7 @@ import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../../modules/user/user.entity';
 import { CitizenEntity } from '../citizen/citizen.entity';
 import { ClaimVoucherDto } from './Dto/claim-voucher-dto';
+import type { VoucherClaimDto } from './Dto/voucher-claim-dto';
 import {
   VoucherBulkCreateDto,
   VoucherCreateDto,
@@ -152,7 +153,7 @@ export class VoucherController {
   claimVoucher(
     @Query(new ValidationPipe({ transform: true }))
     data: ClaimVoucherDto,
-  ): Promise<VoucherDto> {
+  ): Promise<VoucherClaimDto> {
     return this.voucherService.claimVoucher(data);
   }
 
