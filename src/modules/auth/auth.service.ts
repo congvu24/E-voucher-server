@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CitizenDto } from 'modules/citizen/dto/citizen-dto';
 
 import { TokenType } from '../../common/constants/token-type';
-import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
+import type { CitizenDto } from '../../modules/citizen/dto/citizen-dto';
 import { UtilsProvider } from '../../providers/utils.provider';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import type { UserDto } from '../user/dto/user-dto';
@@ -43,7 +42,7 @@ export class AuthService {
     );
 
     if (!user || !isPasswordValid) {
-      throw new UserNotFoundException();
+      throw new UnauthorizedException();
     }
 
     return user;

@@ -1,21 +1,17 @@
 /* eslint-disable unicorn/no-array-for-each */
 import {
-  CACHE_MANAGER,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Cache } from 'cache-manager';
 import type { PageDto } from 'common/dto/page.dto';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 import { HelpLevelValue } from '../../common/constants/help-level-type';
 import { VOUCHER_VALID_DAY } from '../../common/constants/number';
 import { VoucherStatusType } from '../../common/constants/voucher-status-type';
-import { CitizenEntity } from '../../modules/citizen/citizen.entity';
+import type { CitizenEntity } from '../../modules/citizen/citizen.entity';
 import { LedgerService } from '../../modules/ledger/ledger.service';
 import { PackageService } from '../../modules/package/package.service';
 import { QrcodeService } from '../../modules/qrcode/qrcode.service';
@@ -24,12 +20,12 @@ import { WebsocketService } from '../../modules/websocket/websocket.service';
 import { ContextProvider } from '../../providers/context.provider';
 import { UtilsProvider } from '../../providers/utils.provider';
 import type { ClaimVoucherDto } from './Dto/claim-voucher-dto';
+import type { VoucherClaimDto } from './Dto/voucher-claim-dto';
 import type { VoucherBulkCreateDto } from './Dto/voucher-create-dto';
 import { VoucherCreateDto } from './Dto/voucher-create-dto';
 import type { VoucherDto } from './Dto/voucher-dto';
 import type { VoucherPageOptions } from './Dto/voucher-page-options.dto';
 import type { VoucherQR } from './Dto/voucher-qr-dto';
-import { VoucherEntity } from './voucher.entity';
 import { VoucherRepository } from './voucher.repository';
 import { VoucherClaimRepository } from './voucher-claim.repository';
 import { VoucherRequestService } from './voucher-request.service';
@@ -202,7 +198,7 @@ export class VoucherService {
     return voucher.toDto();
   }
 
-  async claimVoucher(data: ClaimVoucherDto): Promise<VoucherDto> {
+  async claimVoucher(data: ClaimVoucherDto): Promise<VoucherClaimDto> {
     const dealer = ContextProvider.getAuthUser();
 
     const voucher = await this.ledgerService.getVoucher(
@@ -223,22 +219,22 @@ export class VoucherService {
       throw new NotFoundException();
     }
 
-    // if (
-    //   voucher.value < servicePackage.minValue ||
-    //   voucher.value > servicePackage.maxValue
-    // ) {
-    //   throw new HttpException(
-    //     'This package is beyond the value of voucher',
-    //     HttpStatus.CONFLICT,
-    //   );
-    // }
+    if (
+      voucher.value < servicePackage.minValue ||
+      voucher.value > servicePackage.maxValue
+    ) {
+      throw new HttpException(
+        'This package is beyond the value of voucher',
+        HttpStatus.CONFLICT,
+      );
+    }
 
-    // if (voucher.validDate < new Date()) {
-    //   throw new HttpException(
-    //     'This voucher is out of date',
-    //     HttpStatus.CONFLICT,
-    //   );
-    // }
+    if (voucher.validDate < new Date()) {
+      throw new HttpException(
+        'This voucher is out of date',
+        HttpStatus.CONFLICT,
+      );
+    }
 
     if (voucher.status !== VoucherStatusType.UNUSE) {
       throw new HttpException('This voucher is redeemed', HttpStatus.CONFLICT);
@@ -260,7 +256,7 @@ export class VoucherService {
       servicePackage.id,
     );
 
-    await this.voucherClaimRepository.save({
+    const claim = await this.voucherClaimRepository.save({
       servicePackage,
       voucherId: data.voucherId,
       value: voucher.value,
@@ -270,7 +266,7 @@ export class VoucherService {
 
     this.websocket.claimSuccess(data.voucherId);
 
-    return voucher;
+    return claim.toDto();
   }
 
   async getVoucherQR(id: string): Promise<VoucherQR> {
@@ -293,13 +289,6 @@ export class VoucherService {
     if (find !== undefined) {
       url = await this.cache.get(id);
     } else {
-      console.log({
-        key: data.key,
-        supplier_id: data.supplier_id,
-        citizen_id: data.citizen_id,
-        voucher_id: id,
-      });
-
       url = await this.qrCodeService.createQRCode({
         key: data.key,
         supplier_id: data.supplier_id,
