@@ -138,6 +138,8 @@ export class VoucherService {
       });
     }
 
+    queryBuilder.leftJoinAndSelect('voucher.citizen', 'citizen');
+
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
 
     return items.toPageDto(pageMetaDto);
@@ -193,7 +195,13 @@ export class VoucherService {
     voucher.status = VoucherStatusType.DELETED;
 
     await this.voucherRepository.save(voucher);
-    await this.ledgerService.deleteVoucher(voucher.id);
+
+    const data: any = UtilsProvider.decryptData(
+      voucher.token,
+      voucher?.citizen.secret || '',
+    );
+
+    await this.ledgerService.deleteVoucher(data.key);
 
     return voucher.toDto();
   }
