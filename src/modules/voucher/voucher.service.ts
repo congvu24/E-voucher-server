@@ -263,14 +263,18 @@ export class VoucherService {
       servicePackage.dealer.id,
       servicePackage.id,
     );
-
-    const claim = await this.voucherClaimRepository.save({
+    const claim = this.voucherClaimRepository.create();
+    const newClaim = {
       servicePackage,
       voucherId: data.voucherId,
       value: voucher.value,
       citizenName: voucherInDB?.citizen.name,
       citizenEmail: voucherInDB?.citizen.email,
-    });
+    };
+
+    Object.assign(claim, newClaim);
+
+    await this.voucherClaimRepository.save(claim);
 
     this.websocket.claimSuccess(data.voucherId);
 
@@ -302,6 +306,7 @@ export class VoucherService {
         supplier_id: data.supplier_id,
         citizen_id: data.citizen_id,
         voucher_id: id,
+        citizen: voucher.citizen,
       });
 
       await this.cache.set(id, url);
