@@ -306,7 +306,7 @@ export class VoucherService {
         supplier_id: data.supplier_id,
         citizen_id: data.citizen_id,
         voucher_id: id,
-        citizen: voucher.citizen,
+        citizen: voucher.citizen.toDto(),
       });
 
       await this.cache.set(id, url);
