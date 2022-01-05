@@ -42,6 +42,9 @@ export class CitizenEntity extends AbstractEntity<
   @Column({ nullable: true })
   avatar?: string;
 
+  @Column({ nullable: true })
+  activateCode: string;
+
   @Column({ nullable: false, default: false })
   isActive: bool;
 

@@ -98,4 +98,22 @@ export class CitizenController {
 
     csvStream.end();
   }
+
+  @Get('activate')
+  @HttpCode(HttpStatus.OK)
+  async activate(
+    @Query('code') code: string,
+    @Query('email') email: string,
+    @Res() res: Response,
+  ): Promise<any> {
+    const isSuccess = await this.citizenService.activate(code, email);
+
+    if (isSuccess) {
+      return res.send('<div>Activate successfully, you can login now</div>');
+    }
+
+    return res.send(
+      '<div>Activate failed due to wrong token or your account is activated</div>',
+    );
+  }
 }

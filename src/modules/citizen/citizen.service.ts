@@ -4,8 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { toUpper } from 'lodash';
 import type { CitizenPageOptionsDto } from 'modules/user/dto/citizen-page-options.dto';
-import { FindConditions, MoreThan } from 'typeorm';
+import type { FindConditions } from 'typeorm';
+import { MoreThan } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import type { Optional } from 'types';
 
@@ -54,6 +56,16 @@ export class CitizenService {
       citizen.avatar = await this.awsS3Service.uploadImage(file);
     }
 
+    citizen.activateCode = Math.floor(
+      Math.random() * 100_000 + 10_000,
+    ).toString();
+
+    await UtilsProvider.sendMailActivate(
+      citizenRegisterDto.email,
+      `Please access this link to activate your account:
+       http://34.87.41.29:3000/citizen/activate?code=${citizen.activateCode}&email=${citizen.email}`,
+    );
+
     return this.citizenRepository.save(citizen);
   }
 
@@ -71,7 +83,7 @@ export class CitizenService {
       throw new UnauthorizedException();
     }
 
-    if (!citizen.IsValid) {
+    if (!citizen.IsValid || !citizen.isActive) {
       throw new HttpException(
         'Your account is under verifying',
         HttpStatus.FORBIDDEN,
@@ -126,6 +138,26 @@ export class CitizenService {
     }
 
     await this.citizenRepository.delete({ id: citizen.id });
+  }
+
+  async activate(code: string, email: string): Promise<boolean> {
+    const citizen = await this.citizenRepository.findOne({
+      where: { email },
+    });
+
+    if (!citizen || citizen.isActive === true) {
+      return false;
+    }
+
+    if (code === citizen.activateCode) {
+      citizen.isActive = true;
+    } else {
+      return false;
+    }
+
+    await this.citizenRepository.save(citizen);
+
+    return true;
   }
 
   async countNewCitizen(): Promise<number> {

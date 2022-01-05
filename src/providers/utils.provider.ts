@@ -2,6 +2,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import CryptoJS from 'crypto-js';
+import nodemailer from 'nodemailer';
 
 import type { Optional } from '../types';
 
@@ -69,5 +70,29 @@ export class UtilsProvider {
     }
 
     throw new UnauthorizedException();
+  }
+
+  static async sendMailActivate(email: string, content: string): Promise<void> {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    try {
+      const info = await transporter.sendMail({
+        from: process.env.MAIL_USER, // sender address
+        to: email, // list of receivers
+        subject: 'Activate your account', // Subject line
+        text: content, // plain text body
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error(
+        'Hệ thống không thể gửi mail xác nhận, liên hệ admin để xử lí!',
+      );
+    }
   }
 }
