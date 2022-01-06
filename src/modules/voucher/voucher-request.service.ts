@@ -52,7 +52,9 @@ export class VoucherRequestService {
       .where({ citizen: user });
 
     if (pageOptions.status) {
-      queryBuilder.andWhere('status = :status', { status: pageOptions.status });
+      queryBuilder.andWhere('request.status = :status', {
+        status: pageOptions.status,
+      });
     }
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
