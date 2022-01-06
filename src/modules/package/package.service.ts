@@ -97,4 +97,11 @@ export class PackageService {
 
     return this.packageRepository.findOne(id);
   }
+
+  async countAllPackage(dealerId: string): Promise<number> {
+    return this.packageRepository
+      .createQueryBuilder('package')
+      .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
+      .getCount();
+  }
 }

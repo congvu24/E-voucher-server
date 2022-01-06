@@ -107,8 +107,9 @@ export class VoucherRequestService {
       relations: ['citizen'],
     });
 
-    if (!request || request.status !== VoucherRequestType.PENDING)
+    if (!request || request.status !== VoucherRequestType.PENDING) {
       throw new NotFoundException();
+    }
 
     await this.voucherRequestRepository.update(
       { id },

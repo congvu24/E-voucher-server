@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { CitizenService } from '../../modules/citizen/citizen.service';
+import { PackageService } from '../../modules/package/package.service';
 import { UserService } from '../../modules/user/user.service';
 import { VoucherService } from '../../modules/voucher/voucher.service';
 import { VoucherRequestService } from '../../modules/voucher/voucher-request.service';
@@ -15,6 +16,7 @@ export class AnalyticsService {
     public readonly citizenService: CitizenService,
     public readonly requestService: VoucherRequestService,
     public readonly userService: UserService,
+    public readonly servicePackageService: PackageService,
   ) {}
 
   async getSupplierAnalytics(): Promise<ISupplierAnalytic> {
@@ -38,12 +40,14 @@ export class AnalyticsService {
     const sumClaimVoucher = await this.voucherService.sumClaimVoucher(id);
     const sumClaimVoucherInMonth =
       await this.voucherService.sumClaimVoucherInMonth(id);
+    const numberPackage = await this.servicePackageService.countAllPackage(id);
 
     return {
       allOrder,
       thisMonthOrder: countThisMonthClaim,
       sumValue: sumClaimVoucher ?? 0,
       thisMonthValue: sumClaimVoucherInMonth ?? 0,
+      numberPackage,
     };
   }
 
