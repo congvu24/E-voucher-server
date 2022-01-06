@@ -89,6 +89,24 @@ export class VoucherController {
     return this.voucherService.getAllVoucherClaimed(dealer.id, pageOptionsDto);
   }
 
+  @Get('/claimed/my')
+  @ApiTags('dealer')
+  @Auth([RoleType.USER])
+  @ApiOkResponse({
+    type: PageDto,
+    description: 'Get list voucher',
+  })
+  getMyVoucherClaimed(
+    @AuthUser() citizen: CitizenEntity,
+    @Query(new ValidationPipe({ transform: true }))
+    pageOptionsDto: VoucherPageOptions,
+  ): Promise<PageDto<VoucherDto>> {
+    return this.voucherService.getMyVoucherClaimed(
+      citizen.email,
+      pageOptionsDto,
+    );
+  }
+
   @Get('')
   @ApiTags('supplier')
   @Auth([RoleType.SUPPLIER])

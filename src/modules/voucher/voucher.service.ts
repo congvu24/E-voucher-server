@@ -167,6 +167,21 @@ export class VoucherService {
     return items.toPageDto(pageMetaDto);
   }
 
+  async getMyVoucherClaimed(
+    userEmail: string,
+    pageOptions: VoucherPageOptions,
+  ): Promise<PageDto<VoucherDto>> {
+    const queryBuilder =
+      this.voucherClaimRepository.createQueryBuilder('claim');
+
+    queryBuilder.where('claim.citizen_email = :email', { email: userEmail });
+    queryBuilder.leftJoinAndSelect('claim.servicePackage', 'package');
+
+    const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
+
+    return items.toPageDto(pageMetaDto);
+  }
+
   async cancelVoucher(citizen: CitizenEntity, id: string): Promise<VoucherDto> {
     const voucher = await this.voucherRepository.findOne(id, {
       relations: ['citizen'],
