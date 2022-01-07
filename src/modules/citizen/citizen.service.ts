@@ -179,4 +179,34 @@ export class CitizenService {
       },
     });
   }
+
+  async countRegisterByStatus(): Promise<any[]> {
+    const result: any[] = [];
+
+    const countRejected = await this.citizenRepository.count({
+      where: {
+        IsValid: false,
+      },
+    });
+
+    const countAccepted = await this.citizenRepository.count({
+      where: {
+        IsValid: true,
+      },
+    });
+
+    const rejected = {
+      name: 'REJECTED',
+      number: countRejected,
+    };
+
+    const accepted = {
+      name: 'ACCEPTED',
+      number: countAccepted,
+    };
+
+    result.push(rejected, accepted);
+
+    return result;
+  }
 }

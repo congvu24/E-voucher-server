@@ -57,11 +57,14 @@ export class AnalyticsService {
     const thisMonthCitizen = await this.citizenService.countNewCitizen();
     const allCitizen = await this.citizenService.countAllCitizen();
     const pendingCitizen = await this.citizenService.countPendingCitizen();
+    const countRegisterByStatus =
+      await this.citizenService.countRegisterByStatus();
 
     return {
       thisMonthCitizen,
       allCitizen,
       pendingCitizen,
+      countRegisterByStatus,
     };
   }
 }
