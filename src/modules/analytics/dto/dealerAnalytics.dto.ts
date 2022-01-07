@@ -4,6 +4,7 @@ interface IDealerAnalytic {
   sumValue: number;
   thisMonthValue: number;
   numberPackage: number;
+  sumMoneyByPackage: [];
 }
 
 export default IDealerAnalytic;

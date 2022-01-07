@@ -390,4 +390,18 @@ export class VoucherService {
 
     return Number.parseInt(String(sum), 10);
   }
+
+  async sumMoneyByPackage(dealerId: string): Promise<any> {
+    return this.voucherClaimRepository
+      .createQueryBuilder('claim')
+      .select('package.id')
+      .addSelect('package.name')
+      .addSelect('SUM(claim.value)', 'sum')
+      .leftJoin('claim.servicePackage', 'package')
+      .groupBy('package.id')
+      .andWhere('package.dealer_id = :dealerId', { dealerId })
+      .getRawMany();
+    //   .leftJoin('claim.servicePackage', 'package')
+    //   .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
+  }
 }

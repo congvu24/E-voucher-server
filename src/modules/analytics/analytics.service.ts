@@ -41,6 +41,7 @@ export class AnalyticsService {
     const sumClaimVoucherInMonth =
       await this.voucherService.sumClaimVoucherInMonth(id);
     const numberPackage = await this.servicePackageService.countAllPackage(id);
+    const sumMoneyByPackage = await this.voucherService.sumMoneyByPackage(id);
 
     return {
       allOrder,
@@ -48,6 +49,7 @@ export class AnalyticsService {
       sumValue: sumClaimVoucher ?? 0,
       thisMonthValue: sumClaimVoucherInMonth ?? 0,
       numberPackage,
+      sumMoneyByPackage,
     };
   }
 

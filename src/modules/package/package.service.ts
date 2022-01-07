@@ -104,4 +104,16 @@ export class PackageService {
       .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
       .getCount();
   }
+
+  async sumMoneyByPackage(dealerId: string): Promise<any> {
+    const result = await this.packageRepository
+      .createQueryBuilder('package')
+      .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
+      .groupBy('package.id')
+      .getMany();
+
+    console.log(result);
+
+    return [];
+  }
 }
