@@ -395,13 +395,20 @@ export class VoucherService {
     return this.voucherClaimRepository
       .createQueryBuilder('claim')
       .select('package.id')
-      .addSelect('package.name')
-      .addSelect('SUM(claim.value)', 'sum')
+      .addSelect('package.name', 'name')
+      .addSelect('SUM(claim.value)', 'value')
       .leftJoin('claim.servicePackage', 'package')
       .groupBy('package.id')
       .andWhere('package.dealer_id = :dealerId', { dealerId })
       .getRawMany();
-    //   .leftJoin('claim.servicePackage', 'package')
-    //   .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
+  }
+
+  async countVoucherByType(): Promise<any> {
+    return this.voucherRepository
+      .createQueryBuilder('voucher')
+      .select('voucher.type', 'name')
+      .addSelect('COUNT(voucher.id)', 'value')
+      .groupBy('voucher.type')
+      .getRawMany();
   }
 }

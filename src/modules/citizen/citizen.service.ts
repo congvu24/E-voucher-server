@@ -197,12 +197,12 @@ export class CitizenService {
 
     const rejected = {
       name: 'REJECTED',
-      number: countRejected,
+      value: countRejected,
     };
 
     const accepted = {
       name: 'ACCEPTED',
-      number: countAccepted,
+      value: countAccepted,
     };
 
     result.push(rejected, accepted);

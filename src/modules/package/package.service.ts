@@ -106,14 +106,15 @@ export class PackageService {
   }
 
   async sumMoneyByPackage(dealerId: string): Promise<any> {
-    const result = await this.packageRepository
+    return this.packageRepository
       .createQueryBuilder('package')
+      .leftJoin('package.claims', 'claim')
+      .select('package.id', 'id')
+      .addSelect('package.name', 'name')
+      .addSelect('package.thumbnail', 'thumbnail')
+      .addSelect('SUM(claim.value)', 'value')
       .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
       .groupBy('package.id')
-      .getMany();
-
-    console.log(result);
-
-    return [];
+      .getRawMany();
   }
 }

@@ -39,7 +39,7 @@ export class PageOptionsDto {
   @Type(() => Number)
   @IsInt()
   @Min(10)
-  @Max(50)
+  @Max(200)
   @IsOptional()
   readonly take: number = 10;
 

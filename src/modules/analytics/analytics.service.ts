@@ -24,12 +24,14 @@ export class AnalyticsService {
     const newCitizen = await this.citizenService.countNewCitizen();
     const countVoucher = await this.voucherService.countVoucher();
     const countDealer = await this.userService.countDealer();
+    const countVoucherByType = await this.voucherService.countVoucherByType();
 
     return {
       newRequest,
       newCitizen,
       countVoucher,
       countDealer,
+      countVoucherByType,
     };
   }
 
@@ -41,7 +43,8 @@ export class AnalyticsService {
     const sumClaimVoucherInMonth =
       await this.voucherService.sumClaimVoucherInMonth(id);
     const numberPackage = await this.servicePackageService.countAllPackage(id);
-    const sumMoneyByPackage = await this.voucherService.sumMoneyByPackage(id);
+    const sumMoneyByPackage =
+      await this.servicePackageService.sumMoneyByPackage(id);
 
     return {
       allOrder,
