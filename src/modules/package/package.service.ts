@@ -113,6 +113,7 @@ export class PackageService {
       .addSelect('package.name', 'name')
       .addSelect('package.thumbnail', 'thumbnail')
       .addSelect('SUM(claim.value)', 'value')
+      .addSelect('COUNT(claim.id)', 'numberClaim')
       .where('package.dealer_id = :dealer_id', { dealer_id: dealerId })
       .groupBy('package.id')
       .getRawMany();
