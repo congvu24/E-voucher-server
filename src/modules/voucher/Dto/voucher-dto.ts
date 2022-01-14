@@ -3,6 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { HelpLevelType } from '../../../common/constants/help-level-type';
 import { VoucherStatusType } from '../../../common/constants/voucher-status-type';
 import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { PackageDto } from '../../../modules/package/dto/package-dto';
 import { UserDto } from '../../../modules/user/dto/user-dto';
 import { CitizenDto } from '../../citizen/dto/citizen-dto';
 import type { VoucherEntity } from '../voucher.entity';

@@ -17,14 +17,18 @@ export class SupplierService {
     const queryBuilder =
       this.voucherRequestRepository.createQueryBuilder('request');
 
-      queryBuilder.leftJoinAndSelect("request.citizen", "citizen")
+    queryBuilder.leftJoinAndSelect('request.citizen', 'citizen');
 
     if (pageOptionsDto.status) {
-      queryBuilder.where('status = :status', { status: pageOptionsDto.status });
+      queryBuilder.andWhere('request.status = :status', {
+        status: pageOptionsDto.status,
+      });
     }
 
     if (pageOptionsDto.type) {
-      queryBuilder.where('type = :type', { type: pageOptionsDto.type });
+      queryBuilder.andWhere('request.type = :type', {
+        type: pageOptionsDto.type,
+      });
     }
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);

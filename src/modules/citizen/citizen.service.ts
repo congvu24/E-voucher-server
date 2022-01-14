@@ -60,6 +60,8 @@ export class CitizenService {
       Math.random() * 100_000 + 10_000,
     ).toString();
 
+    citizen.isActive = false;
+
     await UtilsProvider.sendMailActivate(
       citizenRegisterDto.email,
       `Please access this link to activate your account:

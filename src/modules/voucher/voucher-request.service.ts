@@ -92,11 +92,16 @@ export class VoucherRequestService {
   async getAllVoucherRequest(
     pageOptionsDto: VoucherRequestPageOptionsForManager,
   ): Promise<PageDto<VoucherRequestDto>> {
+    console.log('hello');
     const queryBuilder =
       this.voucherRequestRepository.createQueryBuilder('request');
 
     if (pageOptionsDto.status) {
       queryBuilder.where('status = :status', { status: pageOptionsDto.status });
+    }
+
+    if (pageOptionsDto.type) {
+      queryBuilder.where('type = :type', { type: pageOptionsDto.type });
     }
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);

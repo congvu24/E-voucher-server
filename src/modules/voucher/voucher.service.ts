@@ -104,8 +104,6 @@ export class VoucherService {
     citizen: CitizenEntity,
     pageOptions: VoucherPageOptions,
   ): Promise<PageDto<VoucherDto>> {
-    this.websocket.claimSuccess('dasdasd');
-
     const queryBuilder = this.voucherRepository
       .createQueryBuilder('voucher')
       .where({ citizen });
@@ -139,6 +137,12 @@ export class VoucherService {
     }
 
     queryBuilder.leftJoinAndSelect('voucher.citizen', 'citizen');
+
+    if (pageOptions.citizenName) {
+      queryBuilder.andWhere('LOWER(citizen.name) like :name', {
+        name: `%${pageOptions.citizenName.toLowerCase()}%`,
+      });
+    }
 
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptions);
 
